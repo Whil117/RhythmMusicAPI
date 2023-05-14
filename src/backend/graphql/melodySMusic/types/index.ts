@@ -93,6 +93,19 @@ const MainTypesDefs = gql`
     pageInfo: IPaginationInfo
   }
 
+  type ISearchAll {
+    albums: ISearchAlbumByArtistId
+    artists: ISearchArtistByName
+    playlists: ISearchPlaylist
+    tracks: ISearchAlbumTracks
+  }
+
+  enum SearchInclude {
+    album
+    artist
+    playlist
+    track
+  }
   type Query {
     SpotifysearchArtistByName(
       take: Int!
@@ -125,6 +138,12 @@ const MainTypesDefs = gql`
     ############UPDATE
     albumUpdateQuery(albumId: String!): IAlbum
     albumById(albumId: String!): IAlbum
+    SpotifySearch(
+      includeSearch: [SearchInclude]!
+      search: String!
+      take: Int!
+      skip: Int!
+    ): ISearchAll
   }
 
   type Mutation {
