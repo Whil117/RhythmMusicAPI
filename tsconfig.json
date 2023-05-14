@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@Src/*": ["src"],
+      "@Config/*": ["config/*"],
+      "@Config/*": ["config/*"],
+      "@GraphQl/*": ["graphql/*"],
+      "@Assets/*": ["assets/*"],
+      "@Atoms/*": ["components/Atoms/*"],
+      "@Apollo/*": ["apollo/*"],
+      "@Whil/*": ["lib/@Whil/*"],
+      "@Auth/*": ["auth/*"],
+      "@Store/*": ["store/*"],
+      "@Utils/*": ["utils/*"],
+      "@Redux/*": ["redux/*"],
+      "@Firebase/*": ["firebase/*"],
+      "@Services/*": ["services/*"],
+      "@Components/*": ["components/*"],
+      "@Helpers/*": ["helpers/*"],
+      "@Hooks/*": ["hooks/*"],
+      "@Styles/*": ["styles/*"],
+      "@Types/*": ["types/*"]
+    },
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "emotion.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/pages/_app.tsx",
+    "src/components/Atoms/Image/index.xts",
+    "src/pages/api/auth/[...nextauth].ts",
+    "src/pages/api/graphql.js",
+    "src/components/@atoms/Atomwrapper/index.tx"
+  ],
+  "exclude": ["node_modules", ".next"]
+}
