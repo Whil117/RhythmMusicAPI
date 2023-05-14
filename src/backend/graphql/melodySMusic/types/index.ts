@@ -121,6 +121,10 @@ const MainTypesDefs = gql`
       skip: Int!
       playlistId: String!
     ): ISearchAlbumTracks
+
+    ############UPDATE
+    albumUpdateQuery(albumId: String!): IAlbum
+    albumById(albumId: String!): IAlbum
   }
 
   type Mutation {

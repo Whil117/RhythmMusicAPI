@@ -3,10 +3,17 @@ import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
 
-type IArgumentsAlbumArtist = {
+type IArgumentsPagination = {
   take: number;
   skip: number;
+};
+
+type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
+};
+
+type IArgumentsAlbum = {
+  albumId: string;
 };
 
 const ResolverAlbumQuery = {
@@ -59,6 +66,44 @@ const ResolverAlbumQuery = {
         hasPreviousPage: skip > 0
       }
     };
+  },
+  albumUpdateQuery: async (_: unknown, { albumId }: IArgumentsAlbum) => {
+    const spotifyAlbum = await CONFIG_SPOTIFY?.SPOTIFY_API?.getAlbum(
+      albumId
+    )?.then((res) => res?.body);
+
+    const newUpdateAlbum = {
+      id: spotifyAlbum?.id,
+      album_type: spotifyAlbum?.album_type,
+      artists: spotifyAlbum?.artists?.map((item) => ({
+        id: item?.id,
+        name: item?.name,
+        spotify_url: item?.external_urls?.spotify,
+        uri: item?.uri
+      })),
+      available_markets: spotifyAlbum?.available_markets,
+      spotify_url: spotifyAlbum?.external_urls?.spotify,
+      photo: spotifyAlbum?.images?.[0]?.url,
+      name: spotifyAlbum?.name,
+      release_date: spotifyAlbum?.release_date,
+      release_date_precision: spotifyAlbum?.release_date_precision,
+      total_tracks: spotifyAlbum?.total_tracks,
+      uri: spotifyAlbum?.uri
+    };
+
+    await AlbumModel?.findOneAndUpdate(
+      {
+        id: albumId
+      },
+      newUpdateAlbum
+    );
+
+    return newUpdateAlbum;
+  },
+  albumById: async (_: unknown, { albumId }: IArgumentsAlbum) => {
+    return AlbumModel?.findOne({
+      id: albumId
+    });
   },
   listAlbums: async () => {
     const albums = await AlbumModel.find()

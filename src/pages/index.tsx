@@ -18,7 +18,6 @@ const Home: NextPage = () => {
         height="500"
         id="IFRAMEPLAYER"
         frameBorder="0"
-        allowTransparency
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture;"
       ></iframe>
 
@@ -28,7 +27,6 @@ const Home: NextPage = () => {
         width="100%"
         height="352"
         frameBorder="0"
-        allowfullscreen=""
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="lazy"
       ></iframe>
