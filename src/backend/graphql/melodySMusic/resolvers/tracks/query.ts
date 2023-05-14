@@ -1,4 +1,5 @@
 import { CONFIG_SPOTIFY } from '@Config/spotify';
+import { PlaylistWithTrackModel } from '../../models/playlistWithTrack';
 import { TrackModel } from '../../models/track';
 
 type IArgumentsPagination = {
@@ -155,6 +156,17 @@ const ResolversTrackQuery = {
       const isExist = await TrackModel.findOne({
         id: iterator?.id
       });
+
+      const isExistRelation = await PlaylistWithTrackModel.findOne({
+        playlistId: playlistId,
+        trackId: iterator?.id
+      });
+
+      if (!isExistRelation)
+        await PlaylistWithTrackModel.create({
+          playlistId: playlistId,
+          trackId: iterator?.id
+        });
 
       if (!isExist) await TrackModel.create(iterator);
     }
