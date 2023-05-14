@@ -1,4 +1,4 @@
-# **Swap Coral Six - Player Music**
+# **Moonlight-Music-API**
 
 the succesor of Spotify
 Swap coral six is a project about music inspired in Spotify, I se the Spotify API combined ith Graphql and you can listen music without limits and announcements totally free
