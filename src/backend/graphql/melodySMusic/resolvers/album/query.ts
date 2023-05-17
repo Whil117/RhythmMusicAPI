@@ -2,6 +2,7 @@
 import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
+import controllerAlbums from './controller';
 
 type IArgumentsPagination = {
   take: number;
@@ -30,42 +31,13 @@ const ResolverAlbumQuery = {
     );
 
     const findedArtists = albums?.body;
-    const normalizeAlbum = findedArtists?.items?.map((item) => ({
-      id: item?.id,
-      album_type: item?.album_type,
-      artists: item?.artists?.map((item) => ({
-        id: item?.id,
-        name: item?.name,
-        spotify_url: item?.external_urls?.spotify,
-        uri: item?.uri
-      })),
-      available_markets: item?.available_markets,
-      spotify_url: item?.external_urls?.spotify,
-      photo: item?.images?.[0]?.url,
-      name: item?.name,
-      release_date: item?.release_date,
-      release_date_precision: item?.release_date_precision,
-      total_tracks: item?.total_tracks,
-      uri: item?.uri
-    }));
 
-    for await (const iterator of normalizeAlbum ?? []) {
-      const isFinded = await AlbumModel?.findOne({
-        id: iterator?.id
-      });
-      if (!isFinded) AlbumModel.create(iterator);
-    }
-
-    const totalFindedArtists = findedArtists?.items.length ?? 0;
-    const totalFinded = findedArtists?.total ?? 0;
-    return {
-      items: normalizeAlbum,
-      totalCount: totalFinded,
-      pageInfo: {
-        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
-        hasPreviousPage: skip > 0
-      }
-    };
+    return await controllerAlbums({
+      albums: findedArtists?.items,
+      total: findedArtists?.total,
+      skip,
+      take
+    });
   },
   albumUpdateQuery: async (_: unknown, { albumId }: IArgumentsAlbum) => {
     const spotifyAlbum = await CONFIG_SPOTIFY?.SPOTIFY_API?.getAlbum(

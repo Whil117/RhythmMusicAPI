@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { CONFIG_SPOTIFY } from '@Config/spotify';
-import { AlbumModel } from '../../models/album';
-import { ArtistModel } from '../../models/artist';
-import { PlaylistModel } from '../../models/playlist';
 import { TrackModel } from '../../models/track';
+import controllerAlbums from '../album/controller';
+import controllerArtist from '../artist/controller';
+import controllerPlaylists from '../playlist/controller';
 
 type IncludeArgument = 'album' | 'artist' | 'playlist' | 'track';
 
@@ -28,86 +28,26 @@ const ResolverSearchQuery = {
       }
     );
 
-    // const includeExtension = (argument: IncludeArgument) =>
-    //   includeSearch?.includes(argument);
-
-    // if (includeExtension('album')) {
-    //   const spotifyAlbums = searched?.body?.albums;
-    // }
     const albums = await getExtension('album', includeSearch, async () => {
       const spotifyAlbums = searched?.body?.albums;
 
-      const normalizeAlbum = spotifyAlbums?.items?.map((item) => ({
-        id: item?.id,
-        album_type: item?.album_type,
-        artists: item?.artists?.map((item) => ({
-          id: item?.id,
-          name: item?.name,
-          spotify_url: item?.external_urls?.spotify,
-          uri: item?.uri
-        })),
-        available_markets: item?.available_markets,
-        spotify_url: item?.external_urls?.spotify,
-        photo: item?.images?.[0]?.url,
-        name: item?.name,
-        release_date: item?.release_date,
-        release_date_precision: item?.release_date_precision,
-        total_tracks: item?.total_tracks,
-        uri: item?.uri
-      }));
-
-      for await (const iterator of normalizeAlbum ?? []) {
-        const isFinded = await AlbumModel?.findOne({
-          id: iterator?.id
-        });
-        if (!isFinded) AlbumModel.create(iterator);
-      }
-      const totalFindedArtists = spotifyAlbums?.items.length ?? 0;
-      const totalFinded = spotifyAlbums?.total ?? 0;
-
-      return {
-        items: normalizeAlbum,
-        totalCount: totalFinded,
-        pageInfo: {
-          hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
-          hasPreviousPage: skip > 0
-        }
-      };
+      return await controllerAlbums({
+        albums: spotifyAlbums?.items,
+        total: spotifyAlbums?.total as number,
+        skip,
+        take
+      });
     });
 
     const artists = await getExtension('artist', includeSearch, async () => {
       const findedArtists = searched?.body?.artists;
 
-      const normalizedArtists = findedArtists?.items?.map((iterator) => ({
-        id: iterator?.id,
-        name: iterator?.name,
-        photo: iterator?.images?.[0]?.url,
-        followers: iterator?.followers?.total,
-        popularity: iterator?.popularity,
-        genres: iterator?.genres,
-        uri: iterator?.uri,
-        spotify_url: iterator?.external_urls?.spotify
-      }));
-
-      for (const iterator of normalizedArtists ?? []) {
-        const isFindedArtist = await ArtistModel?.findOne({
-          id: iterator?.id
-        });
-
-        if (!isFindedArtist) ArtistModel.create(iterator);
-      }
-
-      const totalFindedArtists = findedArtists?.items.length ?? 0;
-      const totalFinded = findedArtists?.total ?? 0;
-
-      return {
-        items: normalizedArtists,
-        totalCount: totalFinded,
-        pageInfo: {
-          hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
-          hasPreviousPage: skip > 0
-        }
-      };
+      return await controllerArtist({
+        artists: findedArtists?.items,
+        total: findedArtists?.total as number,
+        take,
+        skip
+      });
     });
 
     const playlists = await getExtension(
@@ -115,42 +55,13 @@ const ResolverSearchQuery = {
       includeSearch,
       async () => {
         const playlistQuery = searched?.body?.playlists;
-        const playlists = playlistQuery?.items?.map((item) => {
-          return {
-            collaborative: item?.collaborative,
-            description: item?.description,
-            spotify_url: item?.external_urls?.spotify,
-            id: item?.id,
-            photo: item?.images?.[0]?.url,
-            name: item?.name,
-            owner: {
-              name: item?.owner?.display_name,
-              id: item?.owner?.id,
-              type: item?.owner?.type,
-              uri: item?.owner?.uri,
-              spotify_url: item?.owner?.external_urls?.spotify
-            },
-            total_tracks: item?.tracks?.total,
-            uri: item?.uri
-          };
-        });
 
-        for (const iterator of playlists ?? []) {
-          const isExist = await PlaylistModel.findOne({
-            id: iterator?.id
-          });
-          if (!isExist) await PlaylistModel.create(iterator);
-        }
-        const totalCount = playlistQuery?.total ?? 0;
-        const hasNextCount = playlistQuery?.items?.length ?? 0;
-        return {
-          items: playlists,
-          totalCount: totalCount,
-          pageInfo: {
-            hasNextPage: hasNextCount + take * (skip - 1) < totalCount,
-            hasPreviousPage: skip > 0
-          }
-        };
+        return await controllerPlaylists({
+          playlists: playlistQuery?.items,
+          total: playlistQuery?.total as number,
+          skip,
+          take
+        });
       }
     );
 
