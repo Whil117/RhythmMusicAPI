@@ -10,23 +10,25 @@ type IArgumentsSearchArtists = {
   nameArtist: string;
 };
 
+export type IArtist = {
+  id: string;
+  name: string;
+  photo: string;
+  followers: number;
+  popularity: number;
+  genres: string[];
+  uri: string;
+  spotify_url: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 type IArgumentsArtist = {
   take: number;
   skip: number;
   order: string;
   artistId: string;
-  filter: {
-    id: string;
-    name: string;
-    photo: string;
-    followers: number;
-    popularity: number;
-    genres: string[];
-    uri: string;
-    spotify_url: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  filter: IArtist;
 };
 const ResolverQueryArtist = {
   SpotifysearchArtistByName: async (

@@ -3,6 +3,7 @@ import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { LeanDocument } from 'mongoose';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
+import { IArtist } from '../artist/query';
 import controllerAlbums from './controller';
 
 type IArgumentsPagination = {
@@ -13,6 +14,21 @@ type IArgumentsPagination = {
 type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
   order: 'ASC' | 'DESC';
+  filter: {
+    id: string;
+    album_type: string;
+    artists: IArtist[];
+    available_markets: string[];
+    spotify_url: string;
+    photo: string;
+    name: string;
+    release_date: string;
+    release_date_precision: string;
+    total_tracks: number;
+    uri: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
 };
 
 type IArgumentsAlbum = {
@@ -82,11 +98,13 @@ const ResolverAlbumQuery = {
 
     return newUpdateAlbum;
   },
-  listAlbumsByArtist: async (
+  listAlbumsByArtistId: async (
     _: unknown,
-    { take, skip, artistId, order }: IArgumentsAlbumArtist
+    { take, skip, artistId, order, filter }: IArgumentsAlbumArtist
   ) => {
-    const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>()
+    const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
+      ...filter
+    })
       .skip(take * skip - take)
       .limit(take)
       .where('artists.id')
@@ -95,7 +113,7 @@ const ResolverAlbumQuery = {
       .lean()
       .exec();
 
-    const totalCount = await AlbumModel.countDocuments()
+    const totalCount = await AlbumModel.countDocuments({ ...filter })
       .where('artists.id')
       .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub');
 

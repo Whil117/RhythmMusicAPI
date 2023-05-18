@@ -136,6 +136,22 @@ const MainTypesDefs = gql`
     updatedAt: String
   }
 
+  input InputListAlbumByArtist {
+    id: String
+    album_type: String
+    artists: [InputListArtistFilter]
+    available_markets: [String]
+    photo: String
+    name: String
+    release_date: String
+    release_date_precision: String
+    total_tracks: Int
+    uri: String
+    spotify_url: String
+    createdAt: String
+    updatedAt: String
+  }
+
   type Query {
     SpotifysearchArtistByName(
       take: Int!
@@ -175,10 +191,11 @@ const MainTypesDefs = gql`
 
     artistById(artistId: ID!): IArtist
     playlistById(playlistById: ID!): IPlaylist
-    listAlbumsByArtist(
+    listAlbumsByArtistId(
       take: Int!
       skip: Int!
       artistId: String!
+      filter: InputListAlbumByArtist
       order: OrderPagination
     ): listAlbumsByArtistPagination
     listArtists(
