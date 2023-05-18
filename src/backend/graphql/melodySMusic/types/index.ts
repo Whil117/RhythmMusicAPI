@@ -100,12 +100,42 @@ const MainTypesDefs = gql`
     tracks: ISearchAlbumTracks
   }
 
+  type listAlbumsByArtistPagination {
+    items: [IAlbum]
+    totalCount: Int
+    pageInfo: IPaginationInfo
+  }
+
+  type ListArtistsPagination {
+    items: [IArtist]
+    totalCount: Int
+    pageInfo: IPaginationInfo
+  }
+
   enum SearchInclude {
     album
     artist
     playlist
     track
   }
+
+  enum OrderPagination {
+    ASC
+    DESC
+  }
+  input InputListArtistFilter {
+    id: String
+    name: String
+    photo: String
+    followers: Int
+    popularity: Int
+    genres: [String]
+    uri: String
+    spotify_url: String
+    createdAt: String
+    updatedAt: String
+  }
+
   type Query {
     SpotifysearchArtistByName(
       take: Int!
@@ -123,7 +153,7 @@ const MainTypesDefs = gql`
       skip: Int!
       albumId: ID!
     ): ISearchAlbumTracks
-    listAlbums: [IAlbum]
+
     SpotifySearchPlaylist(
       take: Int!
       skip: Int!
@@ -135,15 +165,29 @@ const MainTypesDefs = gql`
       playlistId: String!
     ): ISearchAlbumTracks
 
-    ############UPDATE
-    albumUpdateQuery(albumId: String!): IAlbum
-    albumById(albumId: String!): IAlbum
     SpotifySearch(
       includeSearch: [SearchInclude]!
       search: String!
       take: Int!
       skip: Int!
     ): ISearchAll
+    ############UPDATE
+
+    artistById(artistId: ID!): IArtist
+    playlistById(playlistById: ID!): IPlaylist
+    listAlbumsByArtist(
+      take: Int!
+      skip: Int!
+      artistId: String!
+      order: OrderPagination
+    ): listAlbumsByArtistPagination
+    listArtists(
+      take: Int!
+      skip: Int!
+      filter: InputListArtistFilter
+      order: OrderPagination!
+    ): ListArtistsPagination
+    albumById(albumId: String!): IAlbum
   }
 
   type Mutation {
