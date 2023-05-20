@@ -15,7 +15,8 @@ const controllerArtist = async ({
   skip
 }: ControllerOptions) => {
   const normalizedArtists = convertArtists(artists);
-  for (const iterator of artists ?? []) {
+
+  for (const iterator of normalizedArtists ?? []) {
     const isFindedArtist = await ArtistModel?.findOne({
       id: iterator?.id
     });

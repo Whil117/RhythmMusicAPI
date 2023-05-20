@@ -3,7 +3,7 @@ const convertArtists = (artists?: SpotifyApi.ArtistObjectFull[]) => {
     id: iterator?.id,
     name: iterator?.name,
     photo: iterator?.images?.[0]?.url,
-    followers: iterator?.followers?.total,
+    followers: iterator?.followers?.total ?? 0,
     popularity: iterator?.popularity,
     genres: iterator?.genres,
     uri: iterator?.uri,
