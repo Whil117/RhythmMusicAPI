@@ -212,6 +212,12 @@ const MainTypesDefs = gql`
       artistId: ID!
       order: OrderPagination!
     ): ISearchAlbumTracks
+    tracksByAlbumId(
+      take: Int!
+      skip: Int!
+      albumId: ID!
+      order: OrderPagination!
+    ): ISearchAlbumTracks
   }
 
   type Mutation {
