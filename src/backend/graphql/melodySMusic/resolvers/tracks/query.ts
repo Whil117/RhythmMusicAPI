@@ -1,4 +1,5 @@
 import { CONFIG_SPOTIFY } from '@Config/spotify';
+import { ArtistModel } from '../../models/artist';
 import { PlaylistWithTrackModel } from '../../models/playlistWithTrack';
 import { TrackModel } from '../../models/track';
 
@@ -12,6 +13,9 @@ type IArgumentsAlbumArtist = IArgumentsPagination & {
 };
 type IArgumentsPlaylist = IArgumentsPagination & {
   playlistId: string;
+};
+type IArgumentsTrack = {
+  trackId: string;
 };
 const ResolversTrackQuery = {
   SpotifyTracksAlbumById: async (
@@ -180,6 +184,91 @@ const ResolversTrackQuery = {
         hasPreviousPage: skip > 0
       }
     };
+  },
+  trackById: async (_: unknown, { trackId }: IArgumentsTrack) => {
+    const track = (await CONFIG_SPOTIFY.SPOTIFY_API.getTrack(trackId)).body;
+
+    const album = (await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(track?.album?.id))
+      .body;
+
+    const constructTrack = {
+      id: track?.id,
+      name: track?.name,
+      artists: track?.artists?.map(async (item) => {
+        const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
+          .body;
+
+        const isExist = await ArtistModel.findOne({
+          id: item?.id
+        });
+
+        const constructorArtist = {
+          id: artist.id,
+          name: artist?.name,
+          photo: artist?.images?.[0]?.url,
+          followers: artist?.followers?.total,
+          popularity: artist?.popularity,
+          genres: artist?.genres,
+          uri: artist?.uri,
+          spotify_url: artist?.external_urls?.spotify
+        };
+
+        if (!isExist) {
+          await ArtistModel.create(constructorArtist);
+        } else {
+          await ArtistModel.findOneAndUpdate(
+            {
+              id: artist?.id
+            },
+            constructorArtist
+          );
+        }
+        return constructorArtist;
+      }),
+      available_markets: track?.available_markets,
+      album_id: track?.album?.id,
+      album: {
+        id: album?.id,
+        album_type: album?.album_type,
+        artists: album?.artists?.map((item) => ({
+          id: item?.id,
+          name: item?.name,
+          spotify_url: item?.external_urls?.spotify,
+          uri: item?.uri
+        })),
+        available_markets: album?.available_markets,
+        spotify_url: album?.external_urls?.spotify,
+        photo: album?.images?.[0]?.url,
+        name: album?.name,
+        release_date: album?.release_date,
+        release_date_precision: album?.release_date_precision,
+        total_tracks: album?.total_tracks,
+        uri: album?.uri
+      },
+      disc_number: track?.disc_number,
+      duration_ms: track?.duration_ms,
+      explicit: track?.explicit,
+      spotify_url: track?.external_urls?.spotify,
+      preview_url: track?.preview_url,
+      track_number: track?.track_number,
+      uri: track?.uri
+    };
+
+    const trackFouded = await TrackModel.findOne({
+      id: trackId
+    });
+
+    if (trackFouded) {
+      await TrackModel.findOneAndUpdate(
+        {
+          id: trackId
+        },
+        constructTrack
+      );
+    } else {
+      await TrackModel.create(constructTrack);
+    }
+    return constructTrack;
   }
 };
 
