@@ -206,6 +206,12 @@ const MainTypesDefs = gql`
     ): ListArtistsPagination
     albumById(albumId: String!): IAlbum
     trackById(trackId: String!): ITrack
+    tracksByArtistId(
+      take: Int!
+      skip: Int!
+      artistId: ID!
+      order: OrderPagination!
+    ): ISearchAlbumTracks
   }
 
   type Mutation {

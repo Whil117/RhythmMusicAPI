@@ -164,8 +164,8 @@ const ResolverAlbumQuery = {
 };
 2;
 
-const artistsbAlbum = async (
-  item: LeanDocument<SpotifyApi.AlbumObjectFull>
+export const artistsbAlbum = async (
+  item: LeanDocument<SpotifyApi.AlbumObjectFull | SpotifyApi.TrackObjectFull>
 ) => {
   const artists = new Map<
     string,

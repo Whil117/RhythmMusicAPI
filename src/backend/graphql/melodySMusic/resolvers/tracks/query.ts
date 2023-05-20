@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { CONFIG_SPOTIFY } from '@Config/spotify';
+import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
 import { PlaylistWithTrackModel } from '../../models/playlistWithTrack';
 import { TrackModel } from '../../models/track';
+import { artistsbAlbum } from '../album/query';
 
 type IArgumentsPagination = {
   take: number;
@@ -16,6 +19,13 @@ type IArgumentsPlaylist = IArgumentsPagination & {
 };
 type IArgumentsTrack = {
   trackId: string;
+};
+
+type IArgumentsTracksByArtist = {
+  take: number;
+  skip: number;
+  order: string;
+  artistId: string;
 };
 const ResolversTrackQuery = {
   SpotifyTracksAlbumById: async (
@@ -269,7 +279,74 @@ const ResolversTrackQuery = {
       await TrackModel.create(constructTrack);
     }
     return constructTrack;
+  },
+  tracksByArtistId: async (
+    _: unknown,
+    { take, skip, order, artistId }: IArgumentsTracksByArtist
+  ) => {
+    const tracks = await TrackModel.find()
+      .skip(take * skip - take)
+      .limit(take)
+      .where('artists.id')
+      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
+      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .lean()
+      .exec();
+
+    const totalCount = await TrackModel.countDocuments()
+      .where('artists.id')
+      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub');
+
+    const withTracks = await Promise.all(
+      tracks?.map(async (item) => {
+        const albumDb = await AlbumModel?.findOne({
+          id: item?.album_id
+        });
+
+        const album = await (
+          await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item?.album_id)
+        ).body;
+        const dataAlbum = {
+          id: album?.id,
+          album_type: album?.album_type,
+          artists: album?.artists?.map((item) => ({
+            id: item?.id,
+            name: item?.name,
+            spotify_url: item?.external_urls?.spotify,
+            uri: item?.uri
+          })),
+          available_markets: album?.available_markets,
+          spotify_url: album?.external_urls?.spotify,
+          photo: album?.images?.[0]?.url,
+          name: album?.name,
+          release_date: album?.release_date,
+          release_date_precision: album?.release_date_precision,
+          total_tracks: album?.total_tracks,
+          uri: album?.uri
+        };
+        if (!albumDb) {
+          AlbumModel.create(dataAlbum);
+        }
+
+        return {
+          ...item,
+          album: dataAlbum,
+          artists: await artistsbAlbum(item)
+        };
+      })
+    );
+    const totalFindedArtists = tracks?.length ?? 0;
+    const totalFinded = totalCount ?? 0;
+
+    return {
+      items: withTracks,
+      totalCount: totalFinded,
+      pageInfo: {
+        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
+        hasPreviousPage: skip > 1
+      }
+    };
   }
 };
-
+1;
 export default ResolversTrackQuery;
