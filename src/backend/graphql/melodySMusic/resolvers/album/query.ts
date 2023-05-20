@@ -65,12 +65,38 @@ const ResolverAlbumQuery = {
     const newUpdateAlbum = {
       id: spotifyAlbum?.id,
       album_type: spotifyAlbum?.album_type,
-      artists: spotifyAlbum?.artists?.map((item) => ({
-        id: item?.id,
-        name: item?.name,
-        spotify_url: item?.external_urls?.spotify,
-        uri: item?.uri
-      })),
+      artists: await spotifyAlbum?.artists?.map(async (item) => {
+        const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
+          .body;
+
+        const constructorArtist = {
+          id: artist.id,
+          name: artist?.name,
+          photo: artist?.images?.[0]?.url,
+          followers: artist?.followers?.total,
+          popularity: artist?.popularity,
+          genres: artist?.genres,
+          uri: artist?.uri,
+          spotify_url: artist?.external_urls?.spotify
+        };
+
+        const isExist = await ArtistModel.findOne({
+          id: item?.id
+        });
+
+        if (!isExist) {
+          await ArtistModel.create(constructorArtist);
+        } else {
+          await ArtistModel.findOneAndUpdate(
+            {
+              id: artist?.id
+            },
+            constructorArtist
+          );
+        }
+
+        return constructorArtist;
+      }),
       available_markets: spotifyAlbum?.available_markets,
       spotify_url: spotifyAlbum?.external_urls?.spotify,
       photo: spotifyAlbum?.images?.[0]?.url,
