@@ -281,7 +281,7 @@ const ResolversTrackQuery = {
     }
     return constructTrack;
   },
-  tracksByArtistId: async (
+  listTracksByArtistId: async (
     _: unknown,
     { take, skip, order, artistId }: IArgumentsTracksByArtist
   ) => {
@@ -348,7 +348,7 @@ const ResolversTrackQuery = {
       }
     };
   },
-  tracksByAlbumId: async (
+  listTracksByAlbumId: async (
     _: unknown,
     { take, skip, order, albumId }: IArgumentsAlbumArtist
   ) => {
