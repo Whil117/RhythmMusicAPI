@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { PlaylistModel } from '../../models/playlist';
+import getterFilterTracks from '../../utils';
 import controllerPlaylists from './controller';
 
 type IArgumentsAlbumArtist = {
@@ -11,6 +12,16 @@ type IArgumentsAlbumArtist = {
 
 type IArgumentsPlaylist = {
   playlistById: string;
+};
+
+type IArgumentsPlaylists = {
+  take: number;
+  skip: number;
+  order: string;
+  artistId: string;
+  filter: {
+    artistName: string;
+  };
 };
 
 const ResolverQueryPlaylist = {
@@ -72,6 +83,44 @@ const ResolverQueryPlaylist = {
       );
     }
     return newPlaylistUpdate;
+  },
+  listPlaylists: async (
+    _: unknown,
+    { take, skip, order, filter }: IArgumentsPlaylists
+  ) => {
+    const constructorFilter =
+      getterFilterTracks(filter ?? {}, (value) => {
+        return {
+          playlistName: {
+            name: { $regex: value || '', $options: 'i' }
+          }
+        };
+      }) ?? {};
+    const artits = await PlaylistModel.find({
+      ...constructorFilter
+    })
+      .skip(take * skip - take)
+      .limit(take)
+      // .where('id')
+      // .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
+      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .lean()
+      .exec();
+
+    const totalCount = await PlaylistModel.countDocuments({
+      ...constructorFilter
+    });
+
+    const totalFindedArtists = artits?.length ?? 0;
+    const totalFinded = totalCount ?? 0;
+    return {
+      items: artits,
+      totalCount: totalFinded,
+      pageInfo: {
+        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
+        hasPreviousPage: skip > 1
+      }
+    };
   }
 };
 

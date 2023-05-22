@@ -140,6 +140,10 @@ const MainTypesDefs = gql`
     trackName: String
   }
 
+  input InputFilterPlaylists {
+    playlistName: String
+  }
+
   type Query {
     SpotifysearchArtistByName(
       take: Int!
@@ -198,6 +202,14 @@ const MainTypesDefs = gql`
       filter: InputListArtistFilter
       order: OrderPagination!
     ): ListArtistsPagination
+
+    listPlaylists(
+      take: Int!
+      skip: Int!
+      filter: InputFilterPlaylists
+      order: OrderPagination!
+    ): ISearchPlaylist
+
     listTracks(
       take: Int!
       skip: Int!
