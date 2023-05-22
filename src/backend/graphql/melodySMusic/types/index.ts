@@ -137,19 +137,9 @@ const MainTypesDefs = gql`
   }
 
   input InputListAlbumByArtist {
-    id: String
-    album_type: String
-    artists: [InputListArtistFilter]
-    available_markets: [String]
-    photo: String
-    name: String
-    release_date: String
-    release_date_precision: String
-    total_tracks: Int
-    uri: String
-    spotify_url: String
-    createdAt: String
-    updatedAt: String
+    artistName: String
+    artistId: String
+    albumName: String
   }
 
   input InputFilterTracks {
@@ -196,13 +186,13 @@ const MainTypesDefs = gql`
     ): ISearchAll
     ############UPDATE
 
-    listAlbumsByArtistId(
-      take: Int!
-      skip: Int!
-      artistId: String!
-      filter: InputListAlbumByArtist
-      order: OrderPagination
-    ): listAlbumsByArtistPagination
+    # listAlbumsByArtistId(
+    #   take: Int!
+    #   skip: Int!
+    #   artistId: String!
+    #   filter: InputListAlbumByArtist
+    #   order: OrderPagination
+    # ): listAlbumsByArtistPagination
 
     listAlbums(
       take: Int!

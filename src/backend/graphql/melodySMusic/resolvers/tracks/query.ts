@@ -4,6 +4,7 @@ import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
 import { PlaylistWithTrackModel } from '../../models/playlistWithTrack';
 import { TrackModel } from '../../models/track';
+import getterFilterTracks from '../../utils';
 import { artistsbAlbum } from '../album/query';
 
 type IArgumentsPagination = {
@@ -22,12 +23,6 @@ type IArgumentsTrack = {
   trackId: string;
 };
 
-type IArgumentsTracksByArtist = {
-  take: number;
-  skip: number;
-  order: string;
-  artistId: string;
-};
 type IArgumentsTracks = {
   take: number;
   skip: number;
@@ -293,7 +288,8 @@ const ResolversTrackQuery = {
     _: unknown,
     { take, skip, order, filter }: IArgumentsTracks
   ) => {
-    const constructorFilter = getterFilterTracks(filter ?? {}) ?? {};
+    const constructorFilter =
+      getterFilterTracks(filter ?? {}, currentKeys) ?? {};
     const tracks = await TrackModel.find({
       ...constructorFilter
     })
@@ -376,19 +372,6 @@ const currentKeys = (value: string): any => {
       }
     }
   };
-};
-
-const getterFilterTracks = (filter: { [key: string]: string }) => {
-  return Object.entries(filter).reduce((acc, curr) => {
-    const key = curr?.[0];
-    const value = curr?.[1];
-
-    const filt = currentKeys?.(value)?.[key];
-    return {
-      ...acc,
-      ...filt
-    };
-  }, {});
 };
 
 export default ResolversTrackQuery;

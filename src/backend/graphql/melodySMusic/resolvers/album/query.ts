@@ -3,7 +3,7 @@ import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { LeanDocument } from 'mongoose';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
-import { IArtist } from '../artist/query';
+import getterFilterTracks from '../../utils';
 import controllerAlbums from './controller';
 
 type IArgumentsPagination = {
@@ -15,19 +15,8 @@ type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
   order: 'ASC' | 'DESC';
   filter: {
-    id: string;
-    album_type: string;
-    artists: IArtist[];
-    available_markets: string[];
-    spotify_url: string;
-    photo: string;
-    name: string;
-    release_date: string;
-    release_date_precision: string;
-    total_tracks: number;
-    uri: string;
-    createdAt: Date;
-    updatedAt: Date;
+    artistName: string;
+    artistId: string;
   };
 };
 
@@ -124,49 +113,21 @@ const ResolverAlbumQuery = {
 
     return newUpdateAlbum;
   },
-  listAlbumsByArtistId: async (
-    _: unknown,
-    { take, skip, artistId, order, filter }: IArgumentsAlbumArtist
-  ) => {
-    const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
-      ...filter
-    })
-      .skip(take * skip - take)
-      .limit(take)
-      .where('artists.id')
-      .sort({ release_date: order === 'DESC' ? -1 : 1 })
-      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
-      .lean()
-      .exec();
-
-    const totalCount = await AlbumModel.countDocuments({ ...filter })
-      .where('artists.id')
-      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub');
-
-    const withArtists = await Promise.all(
-      albums?.map(async (item) => ({
-        ...item,
-        artists: await artistsbAlbum(item)
-      }))
-    );
-
-    const totalFindedArtists = withArtists?.length ?? 0;
-    const totalFinded = totalCount ?? 0;
-    return {
-      items: withArtists,
-      totalCount: totalFinded,
-      pageInfo: {
-        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
-        hasPreviousPage: skip > 1
-      }
-    };
-  },
   listAlbums: async (
     _: unknown,
     { take, skip, order, filter }: IArgumentsAlbumArtist
   ) => {
+    const constructorFilter =
+      getterFilterTracks(filter ?? {}, (value) => {
+        return {
+          artistId: { 'artists.id': value || '0sYpJ0nCC8AlDrZFeAA7ub' },
+          artistName: { 'artists.name': { $regex: value || '' } },
+          albumName: { name: { $regex: value || '' } }
+        };
+      }) ?? {};
+
     const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
-      ...filter
+      ...constructorFilter
     })
       .skip(take * skip - take)
       .limit(take)
@@ -174,7 +135,9 @@ const ResolverAlbumQuery = {
       .lean()
       .exec();
 
-    const totalCount = await AlbumModel.countDocuments({ ...filter });
+    const totalCount = await AlbumModel.countDocuments({
+      ...constructorFilter
+    });
 
     const withArtists = await Promise.all(
       albums?.map(async (item) => ({
