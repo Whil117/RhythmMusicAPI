@@ -14,7 +14,7 @@ const Home: NextPage = () => {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           height: '100vh',
@@ -22,6 +22,7 @@ const Home: NextPage = () => {
         }}
       >
         <h1>Rhythmmuse</h1>
+        <h3>_WhiL</h3>
       </div>
       <footer className={styles.footer}>
         <a
