@@ -13,8 +13,9 @@ const MainResolvers = {
     ...ResolverSearch.QUERY
   },
   Mutation: {
-    ...ResolverArtist.MUTATE,
-    ...ResolverAlbum.MUTATE
+    defaultMutate: () => {
+      return 'DEFAULT MUTATE';
+    }
   }
 };
 

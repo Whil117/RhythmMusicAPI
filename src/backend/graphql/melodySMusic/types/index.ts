@@ -228,8 +228,7 @@ const MainTypesDefs = gql`
     trackById(trackId: String!): ITrack
   }
   type Mutation {
-    updateArtistById: String
-    updateAlbumById: String
+    defaultMutate: String
   }
 `;
 
