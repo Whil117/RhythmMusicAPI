@@ -124,16 +124,7 @@ const MainTypesDefs = gql`
     DESC
   }
   input InputListArtistFilter {
-    id: String
-    name: String
-    photo: String
-    followers: Int
-    popularity: Int
-    genres: [String]
-    uri: String
-    spotify_url: String
-    createdAt: String
-    updatedAt: String
+    artistName: String
   }
 
   input InputListAlbumByArtist {

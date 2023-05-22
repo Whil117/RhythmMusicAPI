@@ -2,6 +2,7 @@
 import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
+import getterFilterTracks from '../../utils';
 import controllerArtist from './controller';
 
 type IArgumentsSearchArtists = {
@@ -28,7 +29,9 @@ type IArgumentsArtist = {
   skip: number;
   order: string;
   artistId: string;
-  filter: IArtist;
+  filter: {
+    artistName: string;
+  };
 };
 const ResolverQueryArtist = {
   SpotifysearchArtistByName: async (
@@ -57,8 +60,16 @@ const ResolverQueryArtist = {
     _: unknown,
     { take, skip, order, filter }: IArgumentsArtist
   ) => {
+    const constructorFilter =
+      getterFilterTracks(filter ?? {}, (value) => {
+        return {
+          artistName: {
+            name: { $regex: value || '', $options: 'i' }
+          }
+        };
+      }) ?? {};
     const artits = await ArtistModel.find({
-      ...filter
+      ...constructorFilter
     })
       .skip(take * skip - take)
       .limit(take)
@@ -69,7 +80,7 @@ const ResolverQueryArtist = {
       .exec();
 
     const totalCount = await AlbumModel.countDocuments({
-      ...filter
+      ...constructorFilter
     });
 
     const totalFindedArtists = artits?.length ?? 0;
