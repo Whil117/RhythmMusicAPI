@@ -28,6 +28,14 @@ type IArgumentsTracksByArtist = {
   order: string;
   artistId: string;
 };
+type IArgumentsTracks = {
+  take: number;
+  skip: number;
+  order: string;
+  filter: {
+    artistId: string;
+  };
+};
 const ResolversTrackQuery = {
   SpotifyTracksAlbumById: async (
     _: unknown,
@@ -281,89 +289,23 @@ const ResolversTrackQuery = {
     }
     return constructTrack;
   },
-  listTracksByArtistId: async (
+  listTracks: async (
     _: unknown,
-    { take, skip, order, artistId }: IArgumentsTracksByArtist
+    { take, skip, order, filter }: IArgumentsTracks
   ) => {
-    const tracks = await TrackModel.find()
+    const constructorFilter = getterFilterTracks(filter ?? {}) ?? {};
+    const tracks = await TrackModel.find({
+      ...constructorFilter
+    })
       .skip(take * skip - take)
       .limit(take)
-      .where('artists.id')
-      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
       .sort({ release_date: order === 'DESC' ? -1 : 1 })
       .lean()
       .exec();
 
-    const totalCount = await TrackModel.countDocuments()
-      .where('artists.id')
-      .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub');
-
-    const withTracks = await Promise.all(
-      tracks?.map(async (item) => {
-        const albumDb = await AlbumModel?.findOne({
-          id: item?.album_id
-        });
-
-        const album = await (
-          await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item?.album_id)
-        ).body;
-        const dataAlbum = {
-          id: album?.id,
-          album_type: album?.album_type,
-          artists: album?.artists?.map((item) => ({
-            id: item?.id,
-            name: item?.name,
-            spotify_url: item?.external_urls?.spotify,
-            uri: item?.uri
-          })),
-          available_markets: album?.available_markets,
-          spotify_url: album?.external_urls?.spotify,
-          photo: album?.images?.[0]?.url,
-          name: album?.name,
-          release_date: album?.release_date,
-          release_date_precision: album?.release_date_precision,
-          total_tracks: album?.total_tracks,
-          uri: album?.uri
-        };
-        if (!albumDb) {
-          AlbumModel.create(dataAlbum);
-        }
-
-        return {
-          ...item,
-          album: dataAlbum,
-          artists: await artistsbAlbum(item)
-        };
-      })
-    );
-    const totalFindedArtists = tracks?.length ?? 0;
-    const totalFinded = totalCount ?? 0;
-
-    return {
-      items: withTracks,
-      totalCount: totalFinded,
-      pageInfo: {
-        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
-        hasPreviousPage: skip > 1
-      }
-    };
-  },
-  listTracksByAlbumId: async (
-    _: unknown,
-    { take, skip, order, albumId }: IArgumentsAlbumArtist
-  ) => {
-    const tracks = await TrackModel.find()
-      .skip(take * skip - take)
-      .limit(take)
-      .where('album_id')
-      .equals(albumId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
-      .sort({ release_date: order === 'DESC' ? -1 : 1 })
-      .lean()
-      .exec();
-
-    const totalCount = await TrackModel.countDocuments()
-      .where('album_id')
-      .equals(albumId ?? '0sYpJ0nCC8AlDrZFeAA7ub');
+    const totalCount = await TrackModel.countDocuments({
+      ...constructorFilter
+    });
 
     const withTracks = await Promise.all(
       tracks?.map(async (item) => {
@@ -416,5 +358,37 @@ const ResolversTrackQuery = {
     };
   }
 };
-1;
+
+const currentKeys = (value: string): any => {
+  return {
+    artistId: {
+      'artists.id': value
+    },
+    artistName: {
+      'artists.name': { $regex: value }
+    },
+    albumId: {
+      album_id: value
+    },
+    trackName: {
+      name: {
+        $regex: value
+      }
+    }
+  };
+};
+
+const getterFilterTracks = (filter: { [key: string]: string }) => {
+  return Object.entries(filter).reduce((acc, curr) => {
+    const key = curr?.[0];
+    const value = curr?.[1];
+
+    const filt = currentKeys?.(value)?.[key];
+    return {
+      ...acc,
+      ...filt
+    };
+  }, {});
+};
+
 export default ResolversTrackQuery;

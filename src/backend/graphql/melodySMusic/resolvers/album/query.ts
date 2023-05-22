@@ -160,9 +160,41 @@ const ResolverAlbumQuery = {
         hasPreviousPage: skip > 1
       }
     };
+  },
+  listAlbums: async (
+    _: unknown,
+    { take, skip, order, filter }: IArgumentsAlbumArtist
+  ) => {
+    const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
+      ...filter
+    })
+      .skip(take * skip - take)
+      .limit(take)
+      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .lean()
+      .exec();
+
+    const totalCount = await AlbumModel.countDocuments({ ...filter });
+
+    const withArtists = await Promise.all(
+      albums?.map(async (item) => ({
+        ...item,
+        artists: await artistsbAlbum(item)
+      }))
+    );
+
+    const totalFindedArtists = withArtists?.length ?? 0;
+    const totalFinded = totalCount ?? 0;
+    return {
+      items: withArtists,
+      totalCount: totalFinded,
+      pageInfo: {
+        hasNextPage: totalFindedArtists + take * (skip - 1) < totalFinded,
+        hasPreviousPage: skip > 1
+      }
+    };
   }
 };
-2;
 
 export const artistsbAlbum = async (
   item: LeanDocument<SpotifyApi.AlbumObjectFull | SpotifyApi.TrackObjectFull>
@@ -181,12 +213,12 @@ export const artistsbAlbum = async (
     }
   >();
 
-  for (const iterator of item.artists) {
+  for (const iterator of item.artists ?? []) {
     const isExist = await ArtistModel.findOne({
       id: iterator?.id
     });
 
-    if (!isExist) {
+    if (!isExist && iterator.id) {
       const artistSpotify = (
         await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(iterator.id)
       ).body;

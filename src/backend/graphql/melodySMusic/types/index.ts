@@ -152,6 +152,13 @@ const MainTypesDefs = gql`
     updatedAt: String
   }
 
+  input InputFilterTracks {
+    artistId: String
+    artistName: String
+    albumId: String
+    trackName: String
+  }
+
   type Query {
     SpotifysearchArtistByName(
       take: Int!
@@ -189,8 +196,6 @@ const MainTypesDefs = gql`
     ): ISearchAll
     ############UPDATE
 
-    artistById(artistId: ID!): IArtist
-    playlistById(playlistById: ID!): IPlaylist
     listAlbumsByArtistId(
       take: Int!
       skip: Int!
@@ -198,26 +203,36 @@ const MainTypesDefs = gql`
       filter: InputListAlbumByArtist
       order: OrderPagination
     ): listAlbumsByArtistPagination
+
+    listAlbums(
+      take: Int!
+      skip: Int!
+      filter: InputListAlbumByArtist
+      order: OrderPagination
+    ): listAlbumsByArtistPagination
+
     listArtists(
       take: Int!
       skip: Int!
       filter: InputListArtistFilter
       order: OrderPagination!
     ): ListArtistsPagination
+    listTracks(
+      take: Int!
+      skip: Int!
+      filter: InputFilterTracks
+      order: OrderPagination!
+    ): ISearchAlbumTracks
+    # listTracksByAlbumId(
+    #   take: Int!
+    #   skip: Int!
+    #   albumId: ID!
+    #   order: OrderPagination!
+    # ): ISearchAlbumTracks
+    artistById(artistId: ID!): IArtist
     albumById(albumId: String!): IAlbum
+    playlistById(playlistById: ID!): IPlaylist
     trackById(trackId: String!): ITrack
-    listTracksByArtistId(
-      take: Int!
-      skip: Int!
-      artistId: ID!
-      order: OrderPagination!
-    ): ISearchAlbumTracks
-    listTracksByAlbumId(
-      take: Int!
-      skip: Int!
-      albumId: ID!
-      order: OrderPagination!
-    ): ISearchAlbumTracks
   }
   type Mutation {
     updateArtistById: String
