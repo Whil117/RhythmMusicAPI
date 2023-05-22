@@ -121,8 +121,10 @@ const ResolverAlbumQuery = {
       getterFilterTracks(filter ?? {}, (value) => {
         return {
           artistId: { 'artists.id': value || '0sYpJ0nCC8AlDrZFeAA7ub' },
-          artistName: { 'artists.name': { $regex: value || '' } },
-          albumName: { name: { $regex: value || '' } }
+          artistName: {
+            'artists.name': { $regex: value || '', $options: 'i' }
+          },
+          albumName: { name: { $regex: value || '', $options: 'i' } }
         };
       }) ?? {};
 

@@ -361,14 +361,15 @@ const currentKeys = (value: string): any => {
       'artists.id': value
     },
     artistName: {
-      'artists.name': { $regex: value }
+      'artists.name': { $regex: value, $options: 'i' }
     },
     albumId: {
       album_id: value
     },
     trackName: {
       name: {
-        $regex: value
+        $regex: value,
+        $options: 'i'
       }
     }
   };
