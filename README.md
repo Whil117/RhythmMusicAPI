@@ -1,4 +1,4 @@
-# **Moonlight Music API**
+# **Rhythmmuse API**
 
 A GraphQL-based music API is an application programming interface that allows developers to access and manipulate music-related data using the GraphQL query language. This API provides a set of well-defined operations and a consistent data schema that enables clients to request specific data and receive only the required information.
 
