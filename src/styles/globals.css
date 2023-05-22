@@ -22,5 +22,6 @@ a {
   body {
     color: white;
     background: black;
+    overflow: hidden;
   }
 }

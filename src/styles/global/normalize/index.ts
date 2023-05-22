@@ -1,5 +1,5 @@
-import { css } from '@emotion/react'
-import colors from '@Styles/global/colors'
+import { css } from '@emotion/react';
+import colors from '@Styles/global/colors';
 
 const Normalize = css`
   html {
@@ -12,6 +12,7 @@ const Normalize = css`
     color: ${colors.white};
     margin: 0;
     font-family: 'Open Sans', sans-serif;
+    overflow: hidden;
   }
   p {
     font-weight: 600;
@@ -159,5 +160,5 @@ const Normalize = css`
   [hidden] {
     display: none;
   }
-`
-export default Normalize
+`;
+export default Normalize;
