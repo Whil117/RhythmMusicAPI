@@ -1,17 +1,24 @@
 /* eslint-disable @next/next/no-sync-scripts */
 /* eslint-disable @next/next/no-page-custom-font */
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { Global } from '@emotion/react';
 import HeadComponent from '@Styles/global/head';
 import Normalize from '@Styles/global/normalize';
 import type { AppPropsWithLayout } from 'next/app';
 import Script from 'next/script';
 
+const client = new ApolloClient({
+  // ...other arguments...
+  uri: '/api/graphql',
+  cache: new InMemoryCache()
+});
+
 const MyApp = ({
   Component,
   pageProps: { ...pageProps }
 }: AppPropsWithLayout) => {
   return (
-    <>
+    <ApolloProvider client={client}>
       <Script
         src="https://open.spotify.com/embed-podcast/iframe-api/v1"
         async
@@ -26,7 +33,7 @@ const MyApp = ({
         <Global styles={Normalize} />
         <Component {...pageProps} />
       </HeadComponent>
-    </>
+    </ApolloProvider>
   );
 };
 

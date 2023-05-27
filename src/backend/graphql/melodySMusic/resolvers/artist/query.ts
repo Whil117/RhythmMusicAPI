@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { CONFIG_SPOTIFY } from '@Config/spotify';
-import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
 import getterFilterTracks from '../../utils';
 import controllerArtist from './controller';
@@ -79,7 +78,7 @@ const ResolverQueryArtist = {
       .lean()
       .exec();
 
-    const totalCount = await AlbumModel.countDocuments({
+    const totalCount = await ArtistModel.countDocuments({
       ...constructorFilter
     });
 
