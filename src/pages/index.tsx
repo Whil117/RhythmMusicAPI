@@ -108,22 +108,35 @@ const Home: NextPage = () => {
             justifyContent: 'center'
           }}
         >
-          <h3
-            style={{
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              width: 100,
-              height: 100
-            }}
-          >
-            TOTAL <br />
-            {Object.values(total)
-              ?.reduce((acc, curr) => acc + curr, 0)
-              ?.toFixed(2)
-              .replace(/\B(?=(\d{3})+(?!\d))/g, `,`)}
-          </h3>
+          <div>
+            <h1
+              style={{
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+              }}
+            >
+              TOTAL <br />
+              {Object.values(total)
+                ?.reduce((acc, curr) => acc + curr, 0)
+                ?.toFixed(2)
+                .replace(/\B(?=(\d{3})+(?!\d))/g, `,`)}
+            </h1>
+            <ul
+              style={{
+                paddingInlineStart: '16px'
+              }}
+            >
+              {Object.entries(total).map(([key, value]) => (
+                <li key={key}>
+                  {key.toUpperCase()}
+                  {'   '}
+                  {value?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, `,`)}
+                </li>
+              ))}
+            </ul>
+          </div>
           <Doughnut
             data={{
               labels: Object.keys(total),
@@ -152,8 +165,8 @@ const Home: NextPage = () => {
               ]
             }}
             style={{
-              height: 480,
-              width: 480
+              height: 200,
+              width: 200
             }}
           />
         </div>
