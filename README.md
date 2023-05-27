@@ -344,7 +344,7 @@ Spotify Search Playlist
 
 return a array of elements with the next params
 
-```json
+```js
 {
   collaborative: Boolean;
   description: String;
@@ -525,3 +525,30 @@ query SpotifyTracksByPlaylist($take: Int!, $skip: Int!, $playlistId: String!) {
 ```
 
 The next querys are using the same structure, every query needs a differents of params but always needs provide a take with skip, except querys by Id
+
+<div>
+  <h1 > Hello! I'm WhiL </h1>
+  <h3 >  I'm FrontEnd Web developer </h3>
+</div>
+
+<p>Follow me on my social medias:</p>
+<div style="
+    display: flex;
+    flex-direction: row;
+    gap:10px;
+    flex-wrap:wrap;
+">
+<a href="https://github.com/Whil117" target="_blank">
+<img src=https://img.shields.io/badge/github-%2325292e.svg?&style=for-the-badge&logo=github&logoColor=white alt=github  />
+</a>
+<a href="https://twitter.com/WhIlEx117" target="_blank">
+<img src=https://img.shields.io/badge/twitter-%2300acee.svg?&style=for-the-badge&logo=twitter&logoColor=white alt=twitter  />
+</a>
+
+<a href="https://www.linkedin.com/in/ivangarciawhil117/" target="_blank">
+<img src=https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white alt=linkedin  />
+</a>
+<a href="https://www.youtube.com/@WhiLEx" target="_blank">
+<img src=https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white alt=twitter  />
+</a>
+</div>
