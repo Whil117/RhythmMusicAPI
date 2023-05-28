@@ -1,6 +1,6 @@
 # **RhythmMusic API**
 
-![1685285592913](image/README/1685285592913.png)
+![1685286056026](image/README/1685286056026.png)
 
 The music API also provides access to an extensive music database that includes detailed information about songs, albums, artists, genres, and other related metadata. This allows developers to obtain accurate and up-to-date information about the available music, which helps them create content-rich and relevant applications for music lovers.
 
@@ -528,7 +528,7 @@ query SpotifyTracksByPlaylist($take: Int!, $skip: Int!, $playlistId: String!) {
 
 The next querys are using the same structure, every query needs a differents of params but always needs provide a take with skip, except querys by Id
 
-![1685285620195](image/README/1685285620195.png)
+![1685286045376](image/README/1685286045376.png)
 
 <div>
   <h1 > Hello! I'm WhiL </h1>
