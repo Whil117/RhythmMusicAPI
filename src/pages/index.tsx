@@ -10,7 +10,7 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const colors = ['#79E0EE', '#98EECC', '#B799FF', '#FEFF86'];
+const colors = ['#7579E7', '#47F759', '#EF4E69', '#F8CA47'];
 const Home: NextPage = () => {
   const totalArtists = useQuery(gql`
     query {
