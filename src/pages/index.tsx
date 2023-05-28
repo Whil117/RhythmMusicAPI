@@ -102,22 +102,48 @@ const Home: NextPage = () => {
                 paddingInlineStart: '16px'
               }}
             >
-              {Object.entries(total).map(([key, value]) => (
-                <li key={key}>
-                  {key.toUpperCase()}
-                  {'   '}
-                  {value?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, `,`)}
-                </li>
-              ))}
+              {Object.entries(total)
+                .map((item) => ({
+                  label: item[0],
+                  value: item[1]
+                }))
+                .sort(function (a, b) {
+                  return b.value - a.value; // Orden de mayor a menor
+                })
+                .map((item) => (
+                  <li key={item.label}>
+                    {item.label.toUpperCase()}
+                    {'   '}
+                    {item.value
+                      ?.toFixed(2)
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, `,`)}
+                  </li>
+                ))}
             </ul>
           </div>
           <Doughnut
             data={{
-              labels: Object.keys(total),
+              labels: Object.entries(total)
+                .map((item) => ({
+                  label: item[0],
+                  value: item[1]
+                }))
+                .sort(function (a, b) {
+                  return b.value - a.value; // Orden de mayor a menor
+                })
+                .map((item) => item.label),
               datasets: [
                 {
                   label: 'Requests',
-                  data: Object.values(total),
+                  data: Object.entries(total)
+                    .map((item) => ({
+                      label: item[0],
+                      value: item[1]
+                    }))
+                    .sort(function (a, b) {
+                      return b.value - a.value; // Orden de mayor a menor
+                    })
+                    .map((item) => item.value),
                   backgroundColor: colors,
                   borderColor: colors,
                   borderWidth: 1
