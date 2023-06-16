@@ -101,9 +101,12 @@ const Home: NextPage = () => {
           />
         </Link>
       </AtomWrapper>
-      <AtomText fontWeight={900} fontSize="1rem" color="white">
-        {url}/api/graphql
-      </AtomText>
+
+      <Link href={'/api/graphql'} passHref>
+        <AtomText fontWeight={900} fontSize="1rem" color="white">
+          {url}/api/graphql
+        </AtomText>
+      </Link>
       <AtomWrapper display="flex" flexDirection="column" gap="2rem">
         <AtomText fontSize="1rem" color="white">
           Rhythm Music is a API created with Nodejs and Mongoose. with the
