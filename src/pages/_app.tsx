@@ -1,11 +1,10 @@
-/* eslint-disable @next/next/no-sync-scripts */
-/* eslint-disable @next/next/no-page-custom-font */
+import '@Styles/fonts.css';
+import '@Styles/globals.css';
+import '@Styles/normalize.css';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { Global } from '@emotion/react';
-import HeadComponent from '@Styles/global/head';
-import Normalize from '@Styles/global/normalize';
+
+import { AtomWrapper } from '@whil/ui';
 import type { AppPropsWithLayout } from 'next/app';
-import Script from 'next/script';
 
 const client = new ApolloClient({
   // ...other arguments...
@@ -19,20 +18,18 @@ const MyApp = ({
 }: AppPropsWithLayout) => {
   return (
     <ApolloProvider client={client}>
-      <Script
-        src="https://open.spotify.com/embed-podcast/iframe-api/v1"
-        async
-      />
-      <script
-        src="https://open.spotify.com/embed-podcast/iframe-api/v1"
-        async
-      ></script>
-      <script src="https://open.spotifycdn.com/cdn/build/embed/embed.77d6c6a6.js"></script>
-      <script src="https://open.spotifycdn.com/cdn/build/embed/vendor~embed.0e9f4f0b.js"></script>
-      <HeadComponent>
-        <Global styles={Normalize} />
+      <AtomWrapper
+        padding="4rem"
+        justifyContent="center"
+        alignItems="center"
+        customCSS={(css) => css`
+          @media (max-width: 768px) {
+            padding: 2em;
+          }
+        `}
+      >
         <Component {...pageProps} />
-      </HeadComponent>
+      </AtomWrapper>
     </ApolloProvider>
   );
 };

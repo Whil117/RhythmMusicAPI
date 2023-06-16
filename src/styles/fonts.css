@@ -1,0 +1,56 @@
+@font-face {
+  font-family: 'GT Walsheim medium';
+  src: url('https://res.cloudinary.com/whil/raw/upload/v1672809698/GTWalsheimProRegular_pr53pa.ttf');
+}
+
+@font-face {
+  font-family: 'GT Walsheim Bold';
+  src: url('https://res.cloudinary.com/whil/raw/upload/v1672809698/GTWalsheimProBold_qnrfkg.ttf');
+  font-weight: bold;
+}
+* {
+  font-family: 'GT Walsheim medium', sans-serif;
+}
+
+:root {
+  --background-color: #fff;
+  --text-color: #1a1a1a;
+  --link-color: #543fd7;
+  --card-background: #ffffff;
+  --loader-color: #1a1a1a;
+  --input-background-color: #ffffff;
+  --icon-color: #1a1a1a;
+  --input-date-color: light;
+  --input-file-border-dashed: #8a8a8a7f;
+  --calendar-color: #f7f7f7;
+}
+
+html[data-theme='light'] {
+  --background-color: #fff;
+  --text-color: rgb(26, 26, 26);
+  --loader-color: #1a1a1a;
+  --card-background: #ffffff;
+  --icon-color: #1a1a1a;
+  --input-background-color: #ffffff;
+  --link-color: #543fd7;
+  --input-date-color: light;
+  --input-file-border-dashed: #8a8a8a7f;
+  --calendar-color: #f7f7f7;
+}
+
+html[data-theme='dark'] {
+  --background-color: #1a1a1a;
+  --text-color: #f7f8f8;
+  --loader-color: #f7f8f8;
+  --icon-color: #f7f8f8;
+  --input-background-color: #1a1a1a;
+  --card-background: #242424;
+  --link-color: #828fff;
+  --input-date-color: dark;
+  --input-file-border-dashed: #f7f8f8;
+  --calendar-color: #242424;
+}
+
+body {
+  background-color: var(--background-color);
+}
