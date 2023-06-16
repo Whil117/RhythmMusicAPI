@@ -5,7 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "develectron": "electron index.js",
-    "start": "next start",
+    "start": "next start -p 3002",
     "lint": "next lint",
     "rebuild": "electron-rebuild",
     "server": " next build && next server"
