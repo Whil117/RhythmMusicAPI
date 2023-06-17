@@ -23,7 +23,7 @@ const MyApp = ({
         url="https://rhythmusic.whil.online/"
         title="Rhythm Music API"
         content="Node.js, Graphql, Backend, API"
-        image="/coverseo2.png"
+        image="/newrhtmmusic.png"
         description="The music API also provides access to an extensive music database that includes detailed information about songs, albums, artists, genres, and other related metadata. "
       />
 
