@@ -18,27 +18,30 @@ const MyApp = ({
   pageProps: { ...pageProps }
 }: AppPropsWithLayout) => {
   return (
-    <ApolloProvider client={client}>
+    <>
       <AtomSeo
         url="https://rhythmusic.whil.online/"
         title="Rhythm Music API"
         content="Node.js, Graphql, Backend, API"
-        image="https://res.cloudinary.com/whil/image/upload/v1686960632/app/music/RhtmBg_qavgyu.png"
-        description="The music API also provides access to an extensive music database that includes detailed information about songs, albums, artists, genres, and other related metadata. This allows developers to obtain accurate and up-to-date information about the available music, which helps them create content-rich and relevant applications for music lovers."
+        image="/coverseo2.png"
+        description="The music API also provides access to an extensive music database that includes detailed information about songs, albums, artists, genres, and other related metadata. "
       />
-      <AtomWrapper
-        padding="4rem"
-        justifyContent="center"
-        alignItems="center"
-        customCSS={(css) => css`
-          @media (max-width: 768px) {
-            padding: 2em;
-          }
-        `}
-      >
-        <Component {...pageProps} />
-      </AtomWrapper>
-    </ApolloProvider>
+
+      <ApolloProvider client={client}>
+        <AtomWrapper
+          padding="4rem"
+          justifyContent="center"
+          alignItems="center"
+          customCSS={(css) => css`
+            @media (max-width: 768px) {
+              padding: 2em;
+            }
+          `}
+        >
+          <Component {...pageProps} />
+        </AtomWrapper>
+      </ApolloProvider>
+    </>
   );
 };
 
