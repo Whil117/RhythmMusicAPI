@@ -103,7 +103,7 @@ const ResolverQueryPlaylist = {
       .limit(take)
       // .where('id')
       // .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
-      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .sort({ createdAt: order === 'DESC' ? -1 : 1 })
       .lean()
       .exec();
 

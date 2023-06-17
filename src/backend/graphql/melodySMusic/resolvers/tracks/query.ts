@@ -295,7 +295,7 @@ const ResolversTrackQuery = {
     })
       .skip(take * skip - take)
       .limit(take)
-      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .sort({ createdAt: order === 'DESC' ? -1 : 1 })
       .lean()
       .exec();
 
