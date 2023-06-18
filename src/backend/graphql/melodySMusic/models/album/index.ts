@@ -8,6 +8,15 @@ const schema = new mongoose.Schema(
     album_type: {
       type: String
     },
+    album_group: {
+      type: String
+    },
+    label: {
+      type: String
+    },
+    popularity: {
+      type: Number
+    },
     artists: [
       {
         id: {
