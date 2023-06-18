@@ -23,6 +23,9 @@ const MainTypesDefs = gql`
     id: String
     album_type: String
     artists: [IArtist]
+    album_group: String
+    label: String
+    popularity: Int
     available_markets: [String]
     spotify_url: String
     photo: String
