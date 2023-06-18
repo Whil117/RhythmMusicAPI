@@ -14,7 +14,7 @@ const controllerAlbums = async ({
   skip,
   total
 }: ControllerOptions) => {
-  const normalizeAlbum = convertAlbums(albums);
+  const normalizeAlbum = await convertAlbums(albums);
 
   for await (const iterator of normalizeAlbum ?? []) {
     const isFinded = await AlbumModel?.findOne({
