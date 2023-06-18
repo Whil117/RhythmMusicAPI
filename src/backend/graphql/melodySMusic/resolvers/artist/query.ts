@@ -27,11 +27,13 @@ export type IArtist = {
 type IArgumentsArtist = {
   take: number;
   skip: number;
-  order: 'ASC' | 'DESC';
   artistId: string;
   filter: {
     popularity: string;
+    followers: string;
+    createdAt: string;
     artistName: string;
+    genres: string[];
   };
 };
 const ResolverQueryArtist = {
@@ -57,20 +59,18 @@ const ResolverQueryArtist = {
       skip
     });
   },
-  listArtists: async (
-    _: unknown,
-    { take, skip, order, filter }: IArgumentsArtist
-  ) => {
+  listArtists: async (_: unknown, { take, skip, filter }: IArgumentsArtist) => {
     const constructorFilter =
       getterFilterTracks(filter ?? {}, (value) => {
         return {
           artistName: {
             name: { $regex: value || '', $options: 'i' }
-          }
+          },
+          genres: filter?.genres
         };
       }) ?? {};
 
-    const sortfilter = filterWithPopular(filter, order);
+    const sortfilter = filterWithPopular(filter);
     const artits = await ArtistModel.find({
       ...constructorFilter
     })

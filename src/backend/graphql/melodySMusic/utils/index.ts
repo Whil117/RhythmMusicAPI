@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const getterFilterTracks = (
-  filter: { [key: string]: string },
-  currentKeys: (value: string) => any
+  filter: { [key: string]: string | string[] },
+  currentKeys: (value: string | string[]) => any
 ) => {
   return Object.entries(filter).reduce((acc, curr) => {
     const key = curr?.[0];

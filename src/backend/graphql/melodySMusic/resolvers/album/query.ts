@@ -13,11 +13,14 @@ type IArgumentsPagination = {
 
 type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
-  order: 'ASC' | 'DESC';
   filter: {
+    releaseDate?: string;
+    followers?: string;
     artistName?: string;
     artistId?: string;
-    popularity: string;
+    createdAt?: string;
+    total_tracks?: string;
+    popularity?: string;
   };
 };
 
@@ -120,7 +123,7 @@ const ResolverAlbumQuery = {
   },
   listAlbums: async (
     _: unknown,
-    { take, skip, order, filter }: IArgumentsAlbumArtist
+    { take, skip, filter }: IArgumentsAlbumArtist
   ) => {
     const constructorFilter =
       getterFilterTracks(filter ?? {}, (value) => {
@@ -129,10 +132,11 @@ const ResolverAlbumQuery = {
           artistName: {
             'artists.name': { $regex: value || '', $options: 'i' }
           },
+          label: { $regex: value || '', $options: 'i' },
           albumName: { name: { $regex: value || '', $options: 'i' } }
         };
       }) ?? {};
-    const sortfilter = filterWithPopular(filter, order);
+    const sortfilter = filterWithPopular(filter);
     const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
       ...constructorFilter
     })
@@ -167,20 +171,35 @@ const ResolverAlbumQuery = {
 };
 
 export const filterWithPopular = (
-  filter: IArgumentsAlbumArtist['filter'],
-  order: IArgumentsAlbumArtist['order']
+  filter: IArgumentsAlbumArtist['filter']
 ): {
   [key: string]: SortOrder;
 } => {
-  if (filter?.popularity) {
+  if (filter?.total_tracks) {
     return {
-      popularity: filter?.popularity === 'POPULAR' ? -1 : 1
+      total_tracks: filter?.total_tracks === 'DESC' ? -1 : 1
     };
   }
-  if (order) {
+
+  if (filter?.followers) {
     return {
-      release_date: order === 'DESC' ? -1 : 1,
-      createdAt: order === 'DESC' ? -1 : 1
+      followers: filter?.followers === 'DESC' ? -1 : 1
+    };
+  }
+
+  if (filter?.createdAt) {
+    return {
+      createdAt: filter?.createdAt === 'DESC' ? -1 : 1
+    };
+  }
+  if (filter?.popularity) {
+    return {
+      popularity: filter?.popularity === 'DESC' ? -1 : 1
+    };
+  }
+  if (filter?.releaseDate) {
+    return {
+      release_date: filter?.releaseDate === 'DESC' ? -1 : 1
     };
   }
   return {};
