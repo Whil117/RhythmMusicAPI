@@ -119,18 +119,25 @@ const MainTypesDefs = gql`
     track
   }
 
+  enum Popularity {
+    POPULAR
+    NOPOPULAR
+  }
+
   enum OrderPagination {
     ASC
     DESC
   }
   input InputListArtistFilter {
     artistName: String
+    popularity: Popularity
   }
 
   input InputListAlbumByArtist {
     artistName: String
     artistId: String
     albumName: String
+    popularity: Popularity
   }
 
   input InputFilterTracks {
@@ -195,7 +202,6 @@ const MainTypesDefs = gql`
       filter: InputListAlbumByArtist
       order: OrderPagination
     ): listAlbumsByArtistPagination
-
     listArtists(
       take: Int!
       skip: Int!

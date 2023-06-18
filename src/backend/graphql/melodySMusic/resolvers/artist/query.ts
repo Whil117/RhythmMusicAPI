@@ -29,6 +29,7 @@ type IArgumentsArtist = {
   order: string;
   artistId: string;
   filter: {
+    popularity: string;
     artistName: string;
   };
 };
@@ -74,7 +75,10 @@ const ResolverQueryArtist = {
       .limit(take)
       // .where('id')
       // .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
-      .sort({ createdAt: order === 'DESC' ? -1 : 1 })
+      .sort({
+        popularity: filter?.popularity === 'POPULAR' ? -1 : 1,
+        release_date: order === 'DESC' ? -1 : 1
+      })
       .lean()
       .exec();
 
