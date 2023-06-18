@@ -289,7 +289,25 @@ const ResolversTrackQuery = {
     { take, skip, order, filter }: IArgumentsTracks
   ) => {
     const constructorFilter =
-      getterFilterTracks(filter ?? {}, currentKeys) ?? {};
+      getterFilterTracks(filter ?? {}, (value): any => {
+        return {
+          artistId: {
+            'artists.id': value
+          },
+          artistName: {
+            'artists.name': { $regex: value, $options: 'i' }
+          },
+          albumId: {
+            album_id: value
+          },
+          trackName: {
+            name: {
+              $regex: value,
+              $options: 'i'
+            }
+          }
+        };
+      }) ?? {};
     const tracks = await TrackModel.find({
       ...constructorFilter
     })
@@ -353,26 +371,6 @@ const ResolversTrackQuery = {
       }
     };
   }
-};
-
-const currentKeys = (value: string): any => {
-  return {
-    artistId: {
-      'artists.id': value
-    },
-    artistName: {
-      'artists.name': { $regex: value, $options: 'i' }
-    },
-    albumId: {
-      album_id: value
-    },
-    trackName: {
-      name: {
-        $regex: value,
-        $options: 'i'
-      }
-    }
-  };
 };
 
 export default ResolversTrackQuery;
