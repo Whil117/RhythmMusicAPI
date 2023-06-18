@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { CONFIG_SPOTIFY } from '@Config/spotify';
-import { LeanDocument } from 'mongoose';
+import { LeanDocument, SortOrder } from 'mongoose';
 import { AlbumModel } from '../../models/album';
 import { ArtistModel } from '../../models/artist';
 import getterFilterTracks from '../../utils';
@@ -15,8 +15,8 @@ type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
   order: 'ASC' | 'DESC';
   filter: {
-    artistName: string;
-    artistId: string;
+    artistName?: string;
+    artistId?: string;
     popularity: string;
   };
 };
@@ -132,16 +132,13 @@ const ResolverAlbumQuery = {
           albumName: { name: { $regex: value || '', $options: 'i' } }
         };
       }) ?? {};
-
+    const sortfilter = filterWithPopular(filter, order);
     const albums = await AlbumModel.find<SpotifyApi.AlbumObjectFull>({
       ...constructorFilter
     })
       .skip(take * skip - take)
       .limit(take)
-      .sort({
-        popularity: filter?.popularity === 'POPULAR' ? -1 : 1,
-        release_date: order === 'DESC' ? -1 : 1
-      })
+      .sort(sortfilter)
       .lean()
       .exec();
 
@@ -167,6 +164,26 @@ const ResolverAlbumQuery = {
       }
     };
   }
+};
+
+export const filterWithPopular = (
+  filter: IArgumentsAlbumArtist['filter'],
+  order: IArgumentsAlbumArtist['order']
+): {
+  [key: string]: SortOrder;
+} => {
+  if (filter?.popularity) {
+    return {
+      popularity: filter?.popularity === 'POPULAR' ? -1 : 1
+    };
+  }
+  if (order) {
+    return {
+      release_date: order === 'DESC' ? -1 : 1,
+      createdAt: order === 'DESC' ? -1 : 1
+    };
+  }
+  return {};
 };
 
 export const artistsbAlbum = async (

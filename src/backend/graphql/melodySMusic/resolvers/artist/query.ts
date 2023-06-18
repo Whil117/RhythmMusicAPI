@@ -2,6 +2,7 @@
 import { CONFIG_SPOTIFY } from '@Config/spotify';
 import { ArtistModel } from '../../models/artist';
 import getterFilterTracks from '../../utils';
+import { filterWithPopular } from '../album/query';
 import controllerArtist from './controller';
 
 type IArgumentsSearchArtists = {
@@ -26,7 +27,7 @@ export type IArtist = {
 type IArgumentsArtist = {
   take: number;
   skip: number;
-  order: string;
+  order: 'ASC' | 'DESC';
   artistId: string;
   filter: {
     popularity: string;
@@ -68,6 +69,8 @@ const ResolverQueryArtist = {
           }
         };
       }) ?? {};
+
+    const sortfilter = filterWithPopular(filter, order);
     const artits = await ArtistModel.find({
       ...constructorFilter
     })
@@ -75,10 +78,7 @@ const ResolverQueryArtist = {
       .limit(take)
       // .where('id')
       // .equals(artistId ?? '0sYpJ0nCC8AlDrZFeAA7ub')
-      .sort({
-        popularity: filter?.popularity === 'POPULAR' ? -1 : 1,
-        release_date: order === 'DESC' ? -1 : 1
-      })
+      .sort(sortfilter)
       .lean()
       .exec();
 
