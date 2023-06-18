@@ -17,6 +17,7 @@ type IArgumentsAlbumArtist = IArgumentsPagination & {
   filter: {
     artistName: string;
     artistId: string;
+    popularity: string;
   };
 };
 
@@ -86,7 +87,11 @@ const ResolverAlbumQuery = {
 
         return constructorArtist;
       }),
+      album_group: spotifyAlbum?.album_group,
+
       available_markets: spotifyAlbum?.available_markets,
+      label: spotifyAlbum?.label,
+      popularity: spotifyAlbum?.popularity,
       spotify_url: spotifyAlbum?.external_urls?.spotify,
       photo: spotifyAlbum?.images?.[0]?.url,
       name: spotifyAlbum?.name,
@@ -133,7 +138,10 @@ const ResolverAlbumQuery = {
     })
       .skip(take * skip - take)
       .limit(take)
-      .sort({ release_date: order === 'DESC' ? -1 : 1 })
+      .sort({
+        popularity: filter?.popularity === 'POPULAR' ? -1 : 1,
+        release_date: order === 'DESC' ? -1 : 1
+      })
       .lean()
       .exec();
 
