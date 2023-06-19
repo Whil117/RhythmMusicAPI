@@ -66,7 +66,11 @@ const ResolverQueryArtist = {
           artistName: {
             name: { $regex: value || '', $options: 'i' }
           },
-          genres: { $in: filter?.genres }
+          genres: {
+            genres: {
+              $in: filter?.genres
+            }
+          }
         };
       }) ?? {};
 
