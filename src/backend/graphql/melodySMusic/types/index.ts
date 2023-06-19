@@ -139,7 +139,7 @@ const MainTypesDefs = gql`
     artistId: String
     albumName: String
     label: String
-    releaseDate: OrderPagination
+    release_date: OrderPagination
     total_tracks: OrderPagination
     createdAt: OrderPagination
     popularity: OrderPagination
