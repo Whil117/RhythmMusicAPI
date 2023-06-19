@@ -349,7 +349,7 @@ const ResolversTrackQuery = {
           uri: album?.uri
         };
         if (!albumDb) {
-          AlbumModel.create(dataAlbum);
+          await AlbumModel.create(dataAlbum);
         }
 
         return {

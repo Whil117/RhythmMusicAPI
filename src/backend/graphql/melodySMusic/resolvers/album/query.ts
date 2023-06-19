@@ -175,34 +175,22 @@ export const filterWithPopular = (
 ): {
   [key: string]: SortOrder;
 } => {
-  if (filter?.total_tracks) {
-    return {
-      total_tracks: filter?.total_tracks === 'DESC' ? -1 : 1
-    };
-  }
-
-  if (filter?.followers) {
-    return {
-      followers: filter?.followers === 'DESC' ? -1 : 1
-    };
-  }
-
-  if (filter?.createdAt) {
-    return {
-      createdAt: filter?.createdAt === 'DESC' ? -1 : 1
-    };
-  }
-  if (filter?.popularity) {
-    return {
-      popularity: filter?.popularity === 'DESC' ? -1 : 1
-    };
-  }
-  if (filter?.releaseDate) {
-    return {
-      release_date: filter?.releaseDate === 'DESC' ? -1 : 1
-    };
-  }
-  return {};
+  const filteredObject = Object.entries(filter).reduce((acc, [key, value]) => {
+    if (value === 'DESC') {
+      return {
+        ...acc,
+        [key]: -1
+      };
+    }
+    if (value === 'ASC') {
+      return {
+        ...acc,
+        [key]: 1
+      };
+    }
+    return acc; // Agrega esta línea para devolver el objeto acc sin modificar
+  }, {});
+  return filteredObject;
 };
 
 export const artistsbAlbum = async (
