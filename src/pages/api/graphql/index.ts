@@ -13,9 +13,9 @@ ConnectMongoDB();
 const apolloServer = new ApolloServer({
   typeDefs: MainTypesDefs,
   resolvers: MainResolvers,
-  persistedQueries: false,
-  cache: new KeyvAdapter(new Keyv()),
-
+  persistedQueries: {
+    cache: new KeyvAdapter(new Keyv())
+  },
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   introspection: true,
   csrfPrevention: true,
