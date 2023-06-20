@@ -1,16 +1,21 @@
 import ConnectMongoDB from '@Config/database';
 import accessSpotify from '@Config/spotify/token';
+import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-micro';
 import MainResolvers from 'backend/graphql/melodySMusic/resolvers';
 import MainTypesDefs from 'backend/graphql/melodySMusic/types';
+import Keyv from 'keyv';
 import Cors from 'micro-cors';
 const cors = Cors();
-
 ConnectMongoDB();
+
 const apolloServer = new ApolloServer({
   typeDefs: MainTypesDefs,
   resolvers: MainResolvers,
+  persistedQueries: false,
+  cache: new KeyvAdapter(new Keyv()),
+
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   introspection: true,
   csrfPrevention: true,

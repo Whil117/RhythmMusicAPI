@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
+    "@apollo/utils.keyvadapter": "^3.0.0",
     "@emotion/react": "11.9.0",
     "@emotion/styled": "11.6.0",
     "@types/extract-colors": "^1.1.0",
@@ -26,7 +27,9 @@
     "chart.js": "^4.3.0",
     "dotenv": "^16.0.0",
     "graphql": "^15.3.0",
+    "install": "^0.13.0",
     "js-cookie": "^3.0.1",
+    "keyv": "^4.5.2",
     "micro": "^9.4.1",
     "micro-cors": "^0.1.1",
     "mongoose": "^6.4.0",

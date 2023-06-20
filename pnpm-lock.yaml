@@ -11,6 +11,9 @@ dependencies:
   '@apollo/client':
     specifier: ^3.6.9
     version: 3.7.2(graphql@15.8.0)(react-dom@18.2.0)(react@18.2.0)
+  '@apollo/utils.keyvadapter':
+    specifier: ^3.0.0
+    version: 3.0.0
   '@emotion/react':
     specifier: 11.9.0
     version: 11.9.0(@babel/core@7.22.5)(@types/react@17.0.2)(react@18.2.0)
@@ -44,9 +47,15 @@ dependencies:
   graphql:
     specifier: ^15.3.0
     version: 15.8.0
+  install:
+    specifier: ^0.13.0
+    version: 0.13.0
   js-cookie:
     specifier: ^3.0.1
     version: 3.0.1
+  keyv:
+    specifier: ^4.5.2
+    version: 4.5.2
   micro:
     specifier: ^9.4.1
     version: 9.4.1
@@ -206,6 +215,15 @@ packages:
       graphql: 15.8.0
     dev: false
 
+  /@apollo/utils.keyvadapter@3.0.0:
+    resolution: {integrity: sha512-GAMsmFODJan8roQtGrn3NNqazAwmXCrfIGX91QRl3sMAfPdBJh+sh5ro6CQQ1NglIA1laqc6Dw4BpeEfDcZ1+Q==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@apollo/utils.keyvaluecache': 3.0.0
+      dataloader: 2.2.2
+      keyv: 4.5.2
+    dev: false
+
   /@apollo/utils.keyvaluecache@1.0.2:
     resolution: {integrity: sha512-p7PVdLPMnPzmXSQVEsy27cYEjVON+SH/Wb7COyW3rQN8+wJgT1nv9jZouYtztWW8ZgTkii5T6tC9qfoDREd4mg==}
     dependencies:
@@ -213,8 +231,21 @@ packages:
       lru-cache: 7.13.1
     dev: false
 
+  /@apollo/utils.keyvaluecache@3.0.0:
+    resolution: {integrity: sha512-tgMpuYU3KvYevCNG+hTemSuSQtZaaWcHGnF/h2ERcw8bodFmbwVsG/jHlhdT0ChlRXgBIqMUFXbQtF6epy+AKA==}
+    engines: {node: '>=16.14'}
+    dependencies:
+      '@apollo/utils.logger': 3.0.0
+      lru-cache: 9.1.2
+    dev: false
+
   /@apollo/utils.logger@1.0.1:
     resolution: {integrity: sha512-XdlzoY7fYNK4OIcvMD2G94RoFZbzTQaNP0jozmqqMudmaGo2I/2Jx71xlDJ801mWA/mbYRihyaw6KJii7k5RVA==}
+    dev: false
+
+  /@apollo/utils.logger@3.0.0:
+    resolution: {integrity: sha512-M8V8JOTH0F2qEi+ktPfw4RL7MvUycDfKp7aEap2eWXfL5SqWHN6jTLbj5f5fj1cceHpyaUSOZlvlaaryaxZAmg==}
+    engines: {node: '>=16'}
     dev: false
 
   /@apollo/utils.printwithreducedwhitespace@1.1.0(graphql@15.8.0):
@@ -2587,6 +2618,10 @@ packages:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
 
+  /dataloader@2.2.2:
+    resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
+    dev: false
+
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -3369,6 +3404,11 @@ packages:
   /inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
+  /install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
+    dev: false
+
   /internal-slot@1.0.4:
     resolution: {integrity: sha512-tA8URYccNzMo94s5MQZgH8NB/XTa6HsOo0MLfXTKKEnHVVdegzaQoFZ7Jp44bdvLvY2waT5dc+j5ICEswhi7UQ==}
     engines: {node: '>= 0.4'}
@@ -3514,6 +3554,10 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
+  /json-buffer@3.0.1:
+    resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
+    dev: false
+
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
     dev: false
@@ -3547,6 +3591,12 @@ packages:
   /kareem@2.5.0:
     resolution: {integrity: sha512-rVBUGGwvqg130iwYu8k7lutHuDBFj1yGRdnlE44wEhxAmFBad1zcL66PdWC1raw3tIObY6XWhtv3VL04xQb/cg==}
     engines: {node: '>=12.0.0'}
+    dev: false
+
+  /keyv@4.5.2:
+    resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
+    dependencies:
+      json-buffer: 3.0.1
     dev: false
 
   /language-subtag-registry@0.3.22:
@@ -3621,6 +3671,11 @@ packages:
   /lru-cache@7.13.1:
     resolution: {integrity: sha512-CHqbAq7NFlW3RSnoWXLJBxCWaZVBrfa9UEHId2M3AW8iEBurbqduNexEUCGc3SHc6iCYXNJCDi903LajSVAEPQ==}
     engines: {node: '>=12'}
+    dev: false
+
+  /lru-cache@9.1.2:
+    resolution: {integrity: sha512-ERJq3FOzJTxBbFjZ7iDs+NiK4VI9Wz+RdrrAB8dio1oV+YvdPzUEE4QNiT2VD51DkIbCYRUUzCRkssXCHqSnKQ==}
+    engines: {node: 14 || >=16.14}
     dev: false
 
   /media-typer@0.3.0:
