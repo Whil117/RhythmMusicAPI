@@ -20,7 +20,7 @@ const controllerAlbums = async ({
     const isFinded = await AlbumModel?.findOne({
       id: iterator?.id
     });
-    if (!isFinded) AlbumModel.create(iterator);
+    if (!isFinded) await AlbumModel.create(iterator);
   }
 
   const totalFindedArtists = albums?.length ?? 0;

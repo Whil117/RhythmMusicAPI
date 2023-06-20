@@ -215,7 +215,7 @@ export const artistsbAlbum = async (
       id: iterator?.id
     });
 
-    if (!isExist && iterator.id) {
+    if (!isExist) {
       const artistSpotify = (
         await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(iterator.id)
       ).body;
@@ -230,7 +230,7 @@ export const artistsbAlbum = async (
         spotify_url: artistSpotify?.external_urls?.spotify
       };
 
-      ArtistModel.create(newArtist);
+      await ArtistModel.create(newArtist);
       artists.set(newArtist?.id, newArtist);
     }
     artists.set(isExist?.id, isExist);

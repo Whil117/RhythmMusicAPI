@@ -21,7 +21,7 @@ const controllerArtist = async ({
       id: iterator?.id
     });
 
-    if (!isFindedArtist) ArtistModel.create(iterator);
+    if (!isFindedArtist) await ArtistModel.create(iterator);
   }
 
   const totalFindedArtists = normalizedArtists?.length ?? 0;
