@@ -5,7 +5,7 @@ import { ArtistModel } from '../../models/artist';
 import { PlaylistWithTrackModel } from '../../models/playlistWithTrack';
 import { TrackModel } from '../../models/track';
 import getterFilterTracks from '../../utils';
-import { artistsbAlbum } from '../album/query';
+import { artistsbAlbum, filterWithPopular } from '../album/query';
 
 type IArgumentsPagination = {
   take: number;
@@ -305,15 +305,21 @@ const ResolversTrackQuery = {
               $regex: value,
               $options: 'i'
             }
+          },
+          explicit: {
+            explicit: value
           }
         };
       }) ?? {};
+
+    const sortfilter = filterWithPopular(filter);
+
     const tracks = await TrackModel.find({
       ...constructorFilter
     })
       .skip(take * skip - take)
       .limit(take)
-      .sort({ createdAt: order === 'DESC' ? -1 : 1 })
+      .sort(sortfilter)
       .lean()
       .exec();
 

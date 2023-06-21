@@ -150,6 +150,12 @@ const MainTypesDefs = gql`
     artistName: String
     albumId: String
     trackName: String
+    explicit: Boolean
+    track_number: OrderPagination
+    createdAt: OrderPagination
+    duration_ms: OrderPagination
+    name: OrderPagination
+    disc_number: OrderPagination
   }
 
   input InputFilterPlaylists {
@@ -223,7 +229,6 @@ const MainTypesDefs = gql`
       take: Int!
       skip: Int!
       filter: InputFilterTracks
-      order: OrderPagination!
     ): ISearchAlbumTracks
     # listTracksByAlbumId(
     #   take: Int!
