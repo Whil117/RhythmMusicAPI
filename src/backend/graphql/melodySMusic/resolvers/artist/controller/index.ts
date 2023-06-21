@@ -17,11 +17,13 @@ const controllerArtist = async ({
   const normalizedArtists = convertArtists(artists);
 
   for (const iterator of normalizedArtists ?? []) {
-    const isFindedArtist = await ArtistModel?.findOne({
-      id: iterator?.id
-    });
+    if (iterator?.id) {
+      const isFindedArtist = await ArtistModel?.findOne({
+        id: iterator?.id
+      });
 
-    if (!isFindedArtist) await ArtistModel.create(iterator);
+      if (!isFindedArtist) await ArtistModel.create(iterator);
+    }
   }
 
   const totalFindedArtists = normalizedArtists?.length ?? 0;

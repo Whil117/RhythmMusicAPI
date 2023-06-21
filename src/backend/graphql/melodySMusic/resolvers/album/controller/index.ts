@@ -17,10 +17,12 @@ const controllerAlbums = async ({
   const normalizeAlbum = await convertAlbums(albums);
 
   for await (const iterator of normalizeAlbum ?? []) {
-    const isFinded = await AlbumModel?.findOne({
-      id: iterator?.id
-    });
-    if (!isFinded) await AlbumModel.create(iterator);
+    if (iterator?.id) {
+      const isFinded = await AlbumModel?.findOne({
+        id: iterator?.id
+      });
+      if (!isFinded) await AlbumModel.create(iterator);
+    }
   }
 
   const totalFindedArtists = albums?.length ?? 0;

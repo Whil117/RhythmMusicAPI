@@ -17,10 +17,12 @@ const controllerPlaylists = async ({
   const dataPlaylists = convertPlaylists(playlists);
 
   for (const iterator of playlists ?? []) {
-    const isExist = await PlaylistModel.findOne({
-      id: iterator?.id
-    });
-    if (!isExist) await PlaylistModel.create(iterator);
+    if (iterator?.id) {
+      const isExist = await PlaylistModel.findOne({
+        id: iterator?.id
+      });
+      if (!isExist) await PlaylistModel.create(iterator);
+    }
   }
   const totalCount = total ?? 0;
   const hasNextCount = playlists?.length ?? 0;

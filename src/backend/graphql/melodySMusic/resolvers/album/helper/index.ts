@@ -3,7 +3,7 @@ import { CONFIG_SPOTIFY } from '@Config/spotify';
 const convertAlbums = async (albums?: SpotifyApi.AlbumObjectSimplified[]) => {
   return await Promise.all(
     albums?.map(async (item) => {
-      const albm = await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item.id);
+      const albm = await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item?.id);
       return {
         id: item?.id,
         album_type: item?.album_type,

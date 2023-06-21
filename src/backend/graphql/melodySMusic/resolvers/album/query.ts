@@ -211,29 +211,31 @@ export const artistsbAlbum = async (
   >();
 
   for (const iterator of item.artists ?? []) {
-    const isExist = await ArtistModel.findOne({
-      id: iterator?.id
-    });
+    if (iterator?.id) {
+      const isExist = await ArtistModel.findOne({
+        id: iterator?.id
+      });
 
-    if (!isExist) {
-      const artistSpotify = (
-        await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(iterator.id)
-      ).body;
-      const newArtist = {
-        id: artistSpotify.id,
-        name: artistSpotify.name,
-        photo: artistSpotify.images?.[0]?.url,
-        followers: artistSpotify?.followers?.total,
-        popularity: artistSpotify?.popularity,
-        genres: artistSpotify?.genres,
-        uri: artistSpotify?.uri,
-        spotify_url: artistSpotify?.external_urls?.spotify
-      };
+      if (!isExist) {
+        const artistSpotify = (
+          await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(iterator.id)
+        ).body;
+        const newArtist = {
+          id: artistSpotify.id,
+          name: artistSpotify.name,
+          photo: artistSpotify.images?.[0]?.url,
+          followers: artistSpotify?.followers?.total,
+          popularity: artistSpotify?.popularity,
+          genres: artistSpotify?.genres,
+          uri: artistSpotify?.uri,
+          spotify_url: artistSpotify?.external_urls?.spotify
+        };
 
-      await ArtistModel.create(newArtist);
-      artists.set(newArtist?.id, newArtist);
+        await ArtistModel.create(newArtist);
+        artists.set(newArtist?.id, newArtist);
+      }
+      artists.set(isExist?.id, isExist);
     }
-    artists.set(isExist?.id, isExist);
   }
 
   return Array.from(artists.values());

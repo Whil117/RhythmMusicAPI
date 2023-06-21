@@ -95,11 +95,13 @@ const ResolversTrackQuery = {
     });
 
     for (const iterator of tracks) {
-      const isExist = await TrackModel.findOne({
-        id: iterator?.id
-      });
+      if (iterator?.id) {
+        const isExist = await TrackModel.findOne({
+          id: iterator?.id
+        });
 
-      if (!isExist) await TrackModel.create(iterator);
+        if (!isExist) await TrackModel.create(iterator);
+      }
     }
 
     const totalFindedArtists = albumsTracks?.items.length ?? 0;
@@ -171,22 +173,24 @@ const ResolversTrackQuery = {
     });
 
     for (const iterator of playlists ?? []) {
-      const isExist = await TrackModel.findOne({
-        id: iterator?.id
-      });
+      if (iterator?.id) {
+        const isExist = await TrackModel.findOne({
+          id: iterator?.id
+        });
 
-      const isExistRelation = await PlaylistWithTrackModel.findOne({
-        playlistId: playlistId,
-        trackId: iterator?.id
-      });
-
-      if (!isExistRelation)
-        await PlaylistWithTrackModel.create({
+        const isExistRelation = await PlaylistWithTrackModel.findOne({
           playlistId: playlistId,
           trackId: iterator?.id
         });
 
-      if (!isExist) await TrackModel.create(iterator);
+        if (!isExistRelation)
+          await PlaylistWithTrackModel.create({
+            playlistId: playlistId,
+            trackId: iterator?.id
+          });
+
+        if (!isExist) await TrackModel.create(iterator);
+      }
     }
     const totalCount = getTracksWIthPlaylist?.body?.total ?? 0;
     const totalHasNextPage = getTracksWIthPlaylist?.body?.items?.length ?? 0;
@@ -209,35 +213,37 @@ const ResolversTrackQuery = {
       id: track?.id,
       name: track?.name,
       artists: track?.artists?.map(async (item) => {
-        const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
-          .body;
+        if (item?.id) {
+          const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
+            .body;
 
-        const isExist = await ArtistModel.findOne({
-          id: item?.id
-        });
+          const isExist = await ArtistModel.findOne({
+            id: item?.id
+          });
 
-        const constructorArtist = {
-          id: artist.id,
-          name: artist?.name,
-          photo: artist?.images?.[0]?.url,
-          followers: artist?.followers?.total,
-          popularity: artist?.popularity,
-          genres: artist?.genres,
-          uri: artist?.uri,
-          spotify_url: artist?.external_urls?.spotify
-        };
+          const constructorArtist = {
+            id: artist.id,
+            name: artist?.name,
+            photo: artist?.images?.[0]?.url,
+            followers: artist?.followers?.total,
+            popularity: artist?.popularity,
+            genres: artist?.genres,
+            uri: artist?.uri,
+            spotify_url: artist?.external_urls?.spotify
+          };
 
-        if (!isExist) {
-          await ArtistModel.create(constructorArtist);
-        } else {
-          await ArtistModel.findOneAndUpdate(
-            {
-              id: artist?.id
-            },
-            constructorArtist
-          );
+          if (!isExist) {
+            await ArtistModel.create(constructorArtist);
+          } else {
+            await ArtistModel.findOneAndUpdate(
+              {
+                id: artist?.id
+              },
+              constructorArtist
+            );
+          }
+          return constructorArtist;
         }
-        return constructorArtist;
       }),
       available_markets: track?.available_markets,
       album_id: track?.album?.id,
@@ -329,40 +335,42 @@ const ResolversTrackQuery = {
 
     const withTracks = await Promise.all(
       tracks?.map(async (item) => {
-        const albumDb = await AlbumModel?.findOne({
-          id: item?.album_id
-        });
+        if (item?.album_id) {
+          const albumDb = await AlbumModel?.findOne({
+            id: item?.album_id
+          });
 
-        const album = await (
-          await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item?.album_id)
-        ).body;
-        const dataAlbum = {
-          id: album?.id,
-          album_type: album?.album_type,
-          artists: album?.artists?.map((item) => ({
-            id: item?.id,
-            name: item?.name,
-            spotify_url: item?.external_urls?.spotify,
-            uri: item?.uri
-          })),
-          available_markets: album?.available_markets,
-          spotify_url: album?.external_urls?.spotify,
-          photo: album?.images?.[0]?.url,
-          name: album?.name,
-          release_date: album?.release_date,
-          release_date_precision: album?.release_date_precision,
-          total_tracks: album?.total_tracks,
-          uri: album?.uri
-        };
-        if (!albumDb) {
-          await AlbumModel.create(dataAlbum);
+          const album = (
+            await CONFIG_SPOTIFY.SPOTIFY_API.getAlbum(item?.album_id)
+          ).body;
+          const dataAlbum = {
+            id: album?.id,
+            album_type: album?.album_type,
+            artists: album?.artists?.map((item) => ({
+              id: item?.id,
+              name: item?.name,
+              spotify_url: item?.external_urls?.spotify,
+              uri: item?.uri
+            })),
+            available_markets: album?.available_markets,
+            spotify_url: album?.external_urls?.spotify,
+            photo: album?.images?.[0]?.url,
+            name: album?.name,
+            release_date: album?.release_date,
+            release_date_precision: album?.release_date_precision,
+            total_tracks: album?.total_tracks,
+            uri: album?.uri
+          };
+          if (!albumDb) {
+            await AlbumModel.create(dataAlbum);
+          }
+
+          return {
+            ...item,
+            album: dataAlbum,
+            artists: await artistsbAlbum(item)
+          };
         }
-
-        return {
-          ...item,
-          album: dataAlbum,
-          artists: await artistsbAlbum(item)
-        };
       })
     );
     const totalFindedArtists = tracks?.length ?? 0;
