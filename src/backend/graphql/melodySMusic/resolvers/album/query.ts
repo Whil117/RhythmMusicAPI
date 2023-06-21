@@ -134,7 +134,12 @@ const ResolverAlbumQuery = {
             'artists.name': { $regex: value || '', $options: 'i' }
           },
           label: { $regex: value || '', $options: 'i' },
-          albumName: { name: { $regex: value || '', $options: 'i' } }
+          albumName: { name: { $regex: value || '', $options: 'i' } },
+          artistIds: {
+            'artists.id': {
+              $in: value
+            }
+          }
         };
       }) ?? {};
     const sortfilter = filterWithPopular(filter);
