@@ -115,6 +115,16 @@ const MainTypesDefs = gql`
     pageInfo: IPaginationInfo
   }
 
+  type ICategoryArtist {
+    label: String
+    id: Int
+  }
+
+  type ListCategories {
+    items: [ICategoryArtist]
+    totalCount: Int
+    pageInfo: IPaginationInfo
+  }
   enum SearchInclude {
     album
     artist
@@ -156,6 +166,11 @@ const MainTypesDefs = gql`
     duration_ms: OrderPagination
     name: OrderPagination
     disc_number: OrderPagination
+  }
+
+  input ListFilterCategoriesArtist {
+    label: OrderPagination
+    labelName: String
   }
 
   input InputFilterPlaylists {
@@ -230,6 +245,11 @@ const MainTypesDefs = gql`
       skip: Int!
       filter: InputFilterTracks
     ): ISearchAlbumTracks
+    listCategoriesArtist(
+      take: Int!
+      skip: Int!
+      filter: ListFilterCategoriesArtist
+    ): ListCategories
     # listTracksByAlbumId(
     #   take: Int!
     #   skip: Int!

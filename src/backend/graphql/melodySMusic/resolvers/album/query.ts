@@ -14,6 +14,7 @@ type IArgumentsPagination = {
 type IArgumentsAlbumArtist = IArgumentsPagination & {
   artistId: string;
   filter: {
+    label?: string;
     releaseDate?: string;
     followers?: string;
     artistName?: string;
