@@ -212,39 +212,42 @@ const ResolversTrackQuery = {
     const constructTrack = {
       id: track?.id,
       name: track?.name,
-      artists: track?.artists?.map(async (item) => {
-        if (item?.id) {
-          const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
-            .body;
+      artists: await Promise.all(
+        track?.artists?.map(async (item) => {
+          if (item?.id) {
+            const artist = (
+              await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id)
+            ).body;
 
-          const isExist = await ArtistModel.findOne({
-            id: item?.id
-          });
+            const isExist = await ArtistModel.findOne({
+              id: item?.id
+            });
 
-          const constructorArtist = {
-            id: artist.id,
-            name: artist?.name,
-            photo: artist?.images?.[0]?.url,
-            followers: artist?.followers?.total,
-            popularity: artist?.popularity,
-            genres: artist?.genres,
-            uri: artist?.uri,
-            spotify_url: artist?.external_urls?.spotify
-          };
+            const constructorArtist = {
+              id: artist.id,
+              name: artist?.name,
+              photo: artist?.images?.[0]?.url,
+              followers: artist?.followers?.total,
+              popularity: artist?.popularity,
+              genres: artist?.genres,
+              uri: artist?.uri,
+              spotify_url: artist?.external_urls?.spotify
+            };
 
-          if (!isExist) {
-            await ArtistModel.create(constructorArtist);
-          } else {
-            await ArtistModel.findOneAndUpdate(
-              {
-                id: artist?.id
-              },
-              constructorArtist
-            );
+            if (!isExist) {
+              await ArtistModel.create(constructorArtist);
+            } else {
+              await ArtistModel.findOneAndUpdate(
+                {
+                  id: artist?.id
+                },
+                constructorArtist
+              );
+            }
+            return constructorArtist;
           }
-          return constructorArtist;
-        }
-      }),
+        })
+      ),
       available_markets: track?.available_markets,
       album_id: track?.album?.id,
       album: {

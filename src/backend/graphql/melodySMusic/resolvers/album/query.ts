@@ -59,40 +59,41 @@ const ResolverAlbumQuery = {
     const newUpdateAlbum = {
       id: spotifyAlbum?.id,
       album_type: spotifyAlbum?.album_type,
-      artists: await spotifyAlbum?.artists?.map(async (item) => {
-        const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
-          .body;
+      artists: await Promise.all(
+        spotifyAlbum?.artists?.map(async (item) => {
+          const artist = (await CONFIG_SPOTIFY.SPOTIFY_API.getArtist(item?.id))
+            .body;
 
-        const constructorArtist = {
-          id: artist.id,
-          name: artist?.name,
-          photo: artist?.images?.[0]?.url,
-          followers: artist?.followers?.total,
-          popularity: artist?.popularity,
-          genres: artist?.genres,
-          uri: artist?.uri,
-          spotify_url: artist?.external_urls?.spotify
-        };
+          const constructorArtist = {
+            id: artist.id,
+            name: artist?.name,
+            photo: artist?.images?.[0]?.url,
+            followers: artist?.followers?.total,
+            popularity: artist?.popularity,
+            genres: artist?.genres,
+            uri: artist?.uri,
+            spotify_url: artist?.external_urls?.spotify
+          };
 
-        const isExist = await ArtistModel.findOne({
-          id: item?.id
-        });
+          const isExist = await ArtistModel.findOne({
+            id: item?.id
+          });
 
-        if (!isExist) {
-          await ArtistModel.create(constructorArtist);
-        } else {
-          await ArtistModel.findOneAndUpdate(
-            {
-              id: artist?.id
-            },
-            constructorArtist
-          );
-        }
+          if (!isExist) {
+            await ArtistModel.create(constructorArtist);
+          } else {
+            await ArtistModel.findOneAndUpdate(
+              {
+                id: artist?.id
+              },
+              constructorArtist
+            );
+          }
 
-        return constructorArtist;
-      }),
+          return constructorArtist;
+        })
+      ),
       album_group: spotifyAlbum?.album_group,
-
       available_markets: spotifyAlbum?.available_markets,
       label: spotifyAlbum?.label,
       popularity: spotifyAlbum?.popularity,
